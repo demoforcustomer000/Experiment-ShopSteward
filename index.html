@@ -10,6 +10,10 @@
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230D1A16'/%3E%3Ccircle cx='32' cy='22' r='9' stroke='%23c8ff3d' stroke-width='5' fill='none'/%3E%3Cline x1='32' y1='31' x2='32' y2='52' stroke='%23c8ff3d' stroke-width='5' stroke-linecap='round'/%3E%3Cline x1='32' y1='42' x2='40' y2='42' stroke='%23c8ff3d' stroke-width='5' stroke-linecap='round'/%3E%3Cline x1='32' y1='47' x2='38' y2='47' stroke='%23c8ff3d' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Manrope:wght@300..800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
 <meta property="og:title" content="ShopSteward — The Trusted Software That Runs Your Shop">
 <meta property="og:description" content="Custom-built inventory, billing and reports. Runs on any phone. Built for your business.">
 <meta property="og:image" content="https://shopsteward.in/images/dashboard.png">
@@ -21,229 +25,483 @@
 <meta name="twitter:image" content="https://shopsteward.in/images/dashboard.png">
 
 <style>
-:root{--bg:#0D1A16;--ink:#eef4ee;--muted:#8e9995;--acid:#c8ff3d;--cyan:#55e6ff;--orange:#ff8d5c;--line:rgba(238,244,238,.12);--max:1240px}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}button{cursor:pointer}::selection{background:var(--acid);color:#071006}
+:root{
+  --bg:#0D1A16;--ink:#eef4ee;--muted:#8e9995;--acid:#c8ff3d;--cyan:#55e6ff;--orange:#ff8d5c;
+  --line:rgba(238,244,238,.12);--max:1240px;
+  --font-display:'Fraunces',Georgia,'Times New Roman',serif;
+  --font-body:'Manrope',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-weight:450;letter-spacing:-.011em;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+::selection{background:var(--acid);color:#071006}
+
 body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;background-image:linear-gradient(rgba(255,255,255,.8) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.8) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:linear-gradient(to bottom,#000,transparent 85%);mask-image:linear-gradient(to bottom,#000,transparent 85%);z-index:0}
 .topline{height:2px;background:linear-gradient(90deg,var(--acid),var(--cyan),transparent)}
 
+/* ---------- Typography ---------- */
+h1,h2{
+  font-family:var(--font-display);
+  font-variation-settings:'opsz' 144,'SOFT' 40,'WONK' 1;
+  font-weight:600;
+  letter-spacing:-.028em;
+  line-height:.98;
+  margin:0;
+}
+h1 em,h2 em,.section h2 em,.contact h2 em{
+  font-style:italic;font-weight:400;color:#66716d;
+  font-variation-settings:'opsz' 144,'SOFT' 100,'WONK' 1;
+}
+h3{
+  font-family:var(--font-display);
+  font-variation-settings:'opsz' 36,'SOFT' 40,'WONK' 0;
+  font-weight:600;letter-spacing:-.015em;line-height:1.15;margin:0;
+}
+.lead,.copy,.steward-lead,p{font-family:var(--font-body);font-weight:400;letter-spacing:-.008em}
+
+/* ---------- Accents ---------- */
+.eyebrow,.section-no,.niche-label,.feature-num,.how-step .num,.not-label,
+.demo-url,.cred,.credentials small,.mini,.popular-badge,.tag,.price-tier,
+.domain-row.header > div,.d-variable,.price-meta span,.footer,.footer-links,
+.trust span,.legal h3,.wa-alt,.navlinks a{
+  font-family:var(--font-mono);
+  font-feature-settings:'ss01' 1,'zero' 1;
+  letter-spacing:.08em;
+}
+.eyebrow{display:flex;align-items:center;gap:10px;color:var(--acid);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.eyebrow:before{content:"";width:32px;height:1px;background:var(--acid)}
+.section-no{font-size:11px;color:var(--acid);letter-spacing:.16em;font-weight:700;text-transform:uppercase}
+
+/* ---------- Nav ---------- */
 .nav{height:76px;display:flex;align-items:center;justify-content:space-between;max-width:var(--max);margin:auto;padding:0 24px;position:relative;z-index:20}
-.brand{font-weight:900;letter-spacing:-.05em;font-size:18px;z-index:21;display:flex;align-items:center;gap:10px}
+.brand{
+  font-family:var(--font-display);
+  font-variation-settings:'opsz' 36,'SOFT' 40,'WONK' 0;
+  font-weight:600;letter-spacing:-.02em;font-size:19px;z-index:21;
+  display:flex;align-items:center;gap:10px;
+}
 .brand-mark{flex-shrink:0;filter:drop-shadow(0 0 8px rgba(200,255,61,.35));transition:.3s}
 .brand:hover .brand-mark{transform:rotate(-8deg);filter:drop-shadow(0 0 12px rgba(200,255,61,.55))}
-.navlinks{display:flex;gap:28px;color:#9fa8a4;font-size:13px;transition:.3s}
+.navlinks{display:flex;gap:26px;color:#9fa8a4;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:500;transition:.3s}
 .navlinks a:hover{color:#fff}
-.navcta{border:1px solid var(--line);padding:11px 16px;border-radius:4px;font-weight:800;font-size:12px;transition:.2s}
-.navcta:hover{border-color:rgba(200,255,61,.6)}
+.navcta{
+  font-family:var(--font-mono);
+  border:1px solid var(--line);padding:11px 16px;border-radius:3px;
+  font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  transition:.2s;
+}
+.navcta:hover{border-color:rgba(200,255,61,.6);color:var(--acid)}
 .menu{display:none;background:none;border:0;color:#fff;font-size:26px;z-index:21;padding:6px;line-height:1}
 
+/* ---------- Hero ---------- */
 .hero{min-height:calc(100svh - 78px);width:100%;margin:0;padding:0;position:relative;display:flex;align-items:center;justify-content:center;z-index:1;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:1}
 .hero-img{
   width:100%;height:100%;object-fit:cover;object-position:right center;display:block;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%), linear-gradient(to right, black 80%, transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%), linear-gradient(to right, black 80%, transparent 100%);
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%), linear-gradient(to right, black 80%, transparent 100%);
+  mask-image:linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%), linear-gradient(to right, black 80%, transparent 100%);
 }
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg, #0D1A16 0%, rgba(13,26,22,0.95) 25%, rgba(13,26,22,0.6) 55%, rgba(13,26,22,0.1) 100%);z-index:2}
 .hero-content{position:relative;z-index:4;width:100%;max-width:var(--max);margin:auto;padding:74px 24px 40px;display:flex;flex-direction:column;justify-content:center;pointer-events:auto}
-.eyebrow{display:flex;align-items:center;gap:10px;color:var(--acid);font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase}
-.eyebrow:before{content:"";width:32px;height:1px;background:var(--acid)}
 
-h1{font-size:clamp(52px,6.4vw,96px);line-height:.86;letter-spacing:-.07em;margin:22px 0 26px;max-width:780px;font-weight:950}
-h1 span.line {
-  display: block;
-  opacity: 0;
-  transform: translateY(30px);
-  animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+h1{font-size:clamp(52px,6.4vw,96px);margin:22px 0 26px;max-width:820px}
+h1 span.line{display:block;opacity:0;transform:translateY(30px);animation:slideUpFade 1s cubic-bezier(0.16,1,0.3,1) forwards}
+h1 .solid{color:#eef4ee;font-variation-settings:'opsz' 144,'SOFT' 40,'WONK' 0;font-weight:600}
+h1 .em{
+  color:#b7c0bb;font-style:italic;font-weight:400;
+  font-variation-settings:'opsz' 144,'SOFT' 100,'WONK' 1;
 }
-h1 .solid { color: #eef4ee; }
-h1 .outline { color: transparent; -webkit-text-stroke: 1px rgba(238,244,238,.72); }
-h1 span.line:nth-child(1) { animation-delay: 0.3s; }
-h1 span.line:nth-child(2) { animation-delay: 0.5s; }
-h1 span.line:nth-child(3) { animation-delay: 0.7s; }
-@keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
-@media (prefers-reduced-motion: reduce) {
-  h1 span.line { animation: none !important; opacity: 1 !important; transform: none !important; }
+h1 span.line:nth-child(1){animation-delay:.3s}
+h1 span.line:nth-child(2){animation-delay:.5s}
+h1 span.line:nth-child(3){animation-delay:.7s}
+@keyframes slideUpFade{to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){
+  h1 span.line{animation:none!important;opacity:1!important;transform:none!important}
 }
 
 .lead{max-width:590px;color:#a8b1ad;font-size:18px;line-height:1.65;margin:0}
 .actions{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
-.btn{padding:15px 20px;border:1px solid var(--line);font-weight:900;font-size:12px;letter-spacing:.04em;border-radius:3px;display:inline-flex;align-items:center;gap:10px;transition:.2s;background:transparent;color:#eef4ee}
+.btn{
+  font-family:var(--font-mono);
+  padding:15px 20px;border:1px solid var(--line);font-weight:600;font-size:11px;
+  letter-spacing:.08em;text-transform:uppercase;
+  border-radius:3px;display:inline-flex;align-items:center;gap:10px;
+  transition:.2s;background:transparent;color:#eef4ee;
+}
 .btn.primary{background:var(--acid);color:#081007;border-color:var(--acid)}
 .btn.primary:hover{box-shadow:0 12px 40px rgba(200,255,61,.25);transform:translateY(-1px)}
-.btn.secondary:hover{border-color:rgba(200,255,61,.6)}
+.btn.secondary:hover{border-color:rgba(200,255,61,.6);color:var(--acid)}
 .trust{display:flex;gap:18px;flex-wrap:wrap;margin-top:28px;color:#78827e;font-size:11px}
-.trust b{color:#dce4df;font-weight:700}
+.trust b{color:#dce4df;font-weight:600}
 
+/* ---------- Niche strip ---------- */
 .nipe-strip{max-width:var(--max);margin:auto;padding:20px 24px 80px;position:relative;z-index:1}
-.niche-label{font-size:10px;letter-spacing:.22em;color:#65716c;text-transform:uppercase;text-align:center;margin-bottom:20px}
+.niche-label{font-size:10px;letter-spacing:.22em;color:#65716c;text-align:center;margin-bottom:20px}
 .niche-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
-.niche-chip{padding:10px 18px;border:1px solid var(--line);border-radius:100px;font-size:11px;letter-spacing:.06em;color:#c9d1cc;font-weight:600;transition:.2s}
-.niche-chip:hover{border-color:rgba(200,255,61,.5);color:#fff}
+.niche-chip{
+  padding:10px 18px;border:1px solid var(--line);border-radius:100px;
+  font-family:var(--font-body);font-size:11px;letter-spacing:.06em;
+  color:#c9d1cc;font-weight:600;transition:.2s;
+}
+.niche-chip:hover{border-color:rgba(200,255,61,.5);color:#fff;transform:translateY(-2px);background:rgba(200,255,61,.05)}
 
+/* ---------- Section base ---------- */
 .section{max-width:var(--max);margin:auto;padding:120px 24px;position:relative;z-index:1}
 .section-head{display:grid;grid-template-columns:.55fr 1.45fr;gap:30px;margin-bottom:65px}
-.section-no{font-size:12px;color:var(--acid);letter-spacing:.18em;font-weight:900}
-.section h2{font-size:clamp(44px,6vw,82px);line-height:.9;letter-spacing:-.065em;margin:0}
-.section h2 em{font-style:normal;color:#66716d}
+.section h2{font-size:clamp(44px,6vw,82px)}
 
+/* ---------- Steward block ---------- */
 .steward-block{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:60px 0;display:grid;grid-template-columns:.55fr 1.45fr;gap:30px}
-.steward-lead{font-size:clamp(20px,2.4vw,28px);line-height:1.45;color:#c9d1cc;margin:0;font-weight:500}
+.steward-lead{font-size:clamp(20px,2.4vw,28px);line-height:1.5;color:#c9d1cc;margin:0;font-weight:400}
 .steward-lead b{color:var(--acid);font-weight:700}
-.steward-lead em{font-style:italic;color:#8e9995}
+.steward-lead em{
+  font-style:italic;color:#8e9995;
+  font-family:var(--font-display);
+  font-variation-settings:'opsz' 32,'SOFT' 100,'WONK' 1;
+  font-weight:400;
+}
 
+/* ---------- Problem ---------- */
 .problem{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .problem article{padding:35px 28px 42px;border-right:1px solid var(--line)}
 .problem article:last-child{border-right:0}
-.bigno{font-size:52px;font-weight:950;letter-spacing:-.08em;color:#26302d}
+.bigno{
+  font-family:var(--font-display);
+  font-variation-settings:'opsz' 144,'SOFT' 100,'WONK' 1;
+  font-style:italic;font-weight:350;letter-spacing:-.06em;
+  font-size:56px;line-height:1;color:#2a3431;transition:color .3s;
+}
 .problem h3{font-size:22px;margin:18px 0 10px}
 .problem p,.feature p,.copy{color:#8f9a95;line-height:1.7}
 
+/* ---------- How ---------- */
 .how{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.how-step{padding:38px 30px 44px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:14px}
+.how-step{padding:38px 30px 44px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:14px;transition:background .3s}
 .how-step:last-child{border-right:0}
-.how-step .num{font-family:ui-monospace,monospace;font-size:11px;color:var(--acid);letter-spacing:.15em;font-weight:800}
-.how-step h3{font-size:22px;margin:0;letter-spacing:-.03em}
+.how-step .num{font-size:11px;color:var(--acid);letter-spacing:.14em;font-weight:700;transition:color .3s}
+.how-step h3{font-size:22px}
 .how-step p{color:#8f9a95;line-height:1.7;margin:0;font-size:14px}
 
+/* ---------- Trusted / big number ---------- */
+.trusted-block{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:70px 0;text-align:center}
+.trusted-num{
+  font-family:var(--font-display);
+  font-variation-settings:'opsz' 144,'SOFT' 20,'WONK' 1;
+  font-weight:700;letter-spacing:-.05em;line-height:.9;
+  color:var(--acid);margin-bottom:20px;
+  font-size:clamp(72px,12vw,140px);
+}
+.trusted-tag{font-size:clamp(18px,2.4vw,26px);color:#c9d1cc;font-weight:500;letter-spacing:-.02em;margin-bottom:32px}
+
+/* ---------- Demo ---------- */
 .demo-wrap{display:grid;grid-template-columns:280px 1fr;min-height:620px;border:1px solid var(--line);background:#0a0e10}
 .demo-info{padding:30px;border-right:1px solid var(--line);display:flex;flex-direction:column}
 .demo-info h3{font-size:24px;margin:10px 0}
-.demo-url{font-size:10px;color:#77837e;word-break:break-all}
+.demo-url{font-size:10px;color:#77837e;word-break:break-all;letter-spacing:.02em}
 .credentials{margin-top:auto;border-top:1px solid var(--line);padding-top:22px}
 .credentials small{display:block;color:#6f7b76;font-size:9px;letter-spacing:.15em;margin-bottom:6px}
-.cred{font-family:ui-monospace,monospace;font-size:13px;color:var(--acid);margin-bottom:14px}
+.cred{font-size:13px;color:var(--acid);margin-bottom:14px;letter-spacing:.02em}
 .demo-screen{position:relative;overflow:hidden;background:#050708}
 .demo-screen iframe{width:100%;height:100%;min-height:620px;border:0;background:#fff;display:block}
 .demo-actions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
-.mini{font-size:10px;padding:10px 11px;border:1px solid var(--line);background:transparent;color:#dce4df;border-radius:2px;font-family:inherit;letter-spacing:.06em}
-.mini:hover{border-color:var(--acid)}
-.mobile-demo-cta { display: none; }
+.mini{font-size:10px;padding:10px 11px;border:1px solid var(--line);background:transparent;color:#dce4df;border-radius:2px;letter-spacing:.06em;font-weight:500}
+.mini:hover{border-color:var(--acid);color:var(--acid)}
+.mobile-demo-cta{display:none}
 
-.features{border-top:1px solid var(--line)}
-.feature{display:grid;grid-template-columns:90px 1fr 1fr;gap:30px;padding:30px 0;border-bottom:1px solid var(--line);align-items:start}
-.feature-num{font-size:11px;color:var(--acid);font-weight:900}
-.feature h3{font-size:25px;margin:0;letter-spacing:-.03em}
-.feature p{margin:0}
-.feature .tag{justify-self:end;font-size:9px;border:1px solid rgba(200,255,61,.35);color:var(--acid);padding:7px 9px;letter-spacing:.12em}
+/* ---------- Features bento ---------- */
+.features-bento{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+.feature-tile{
+  position:relative;
+  padding:30px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.012);
+  border-radius:4px;
+  display:flex;flex-direction:column;gap:14px;
+  transition:transform .5s cubic-bezier(.2,.7,.2,1),
+             border-color .3s ease,
+             background-color .3s ease,
+             box-shadow .5s ease;
+}
+.feature-tile.large{grid-column:span 2}
+.feature-num{font-size:11px;color:var(--acid);font-weight:700;letter-spacing:.14em}
+.feature-tile h3{font-size:22px;letter-spacing:-.02em}
+.feature-tile p{margin:0;color:#8f9a95;line-height:1.65;font-size:14px}
+.feature-tile .tag{
+  align-self:flex-start;
+  font-family:var(--font-mono);
+  font-size:9px;border:1px solid rgba(200,255,61,.35);
+  color:var(--acid);padding:7px 9px;
+  letter-spacing:.14em;font-weight:700;border-radius:2px;
+  transition:.3s;
+}
 
+/* ---------- Testimonial ---------- */
 .testimonial{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:70px 0;display:grid;grid-template-columns:.4fr 1.6fr;gap:40px;align-items:start}
-.testi-quote{font-size:clamp(22px,2.6vw,32px);line-height:1.5;color:#d8e0db;margin:0 0 30px;font-weight:500;letter-spacing:-.015em;position:relative;padding-left:34px}
-.testi-quote:before{content:"\201C";position:absolute;left:0;top:-10px;font-size:80px;color:var(--acid);line-height:1;font-family:Georgia,serif}
-.testi-quote:after{content:"\201D";color:var(--acid);margin-left:4px;font-family:Georgia,serif}
+.testi-quote{
+  font-family:var(--font-display);
+  font-variation-settings:'opsz' 48,'SOFT' 100,'WONK' 1;
+  font-style:italic;font-weight:400;
+  font-size:clamp(22px,2.6vw,32px);
+  line-height:1.45;color:#d8e0db;margin:0 0 30px;
+  letter-spacing:-.01em;position:relative;padding-left:34px;
+}
+.testi-quote:before{content:"\201C";position:absolute;left:0;top:-10px;font-size:80px;color:var(--acid);line-height:1;font-family:Georgia,serif;font-style:normal}
+.testi-quote:after{content:"\201D";color:var(--acid);margin-left:4px;font-family:Georgia,serif;font-style:normal}
 .testi-author{display:flex;flex-direction:column;gap:4px;padding-left:34px}
-.testi-author b{color:#fff;font-weight:800;font-size:15px;letter-spacing:-.01em}
-.testi-author span{color:#8e9995;font-size:13px}
+.testi-author b{color:#fff;font-weight:700;font-size:15px;letter-spacing:-.01em}
+.testi-author span{color:#8e9995;font-size:13px;font-family:var(--font-body)}
 
+/* ---------- Pricing ---------- */
 .pricing{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.price{padding:36px 28px;border-right:1px solid var(--line);min-height:500px;display:flex;flex-direction:column;position:relative}
+.price{
+  padding:36px 28px;border-right:1px solid var(--line);
+  min-height:540px;display:flex;flex-direction:column;position:relative;
+  overflow:hidden;
+  transition:transform .5s cubic-bezier(.2,.7,.2,1),
+             border-color .3s,
+             background-color .3s,
+             box-shadow .5s;
+}
 .price:last-child{border-right:0}
+.price::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(115deg,transparent 42%,rgba(200,255,61,.07) 50%,transparent 58%);
+  transform:translateX(-110%);
+  transition:transform 1s cubic-bezier(.2,.7,.2,1);
+  pointer-events:none;
+}
 .price.popular{background:rgba(200,255,61,.05);box-shadow:inset 0 0 0 1px rgba(200,255,61,.25)}
-.popular-badge{position:absolute;top:0;right:22px;transform:translateY(-50%);background:var(--acid);color:#081007;font-size:9px;font-weight:900;letter-spacing:.16em;padding:7px 12px;border-radius:100px;box-shadow:0 6px 20px rgba(200,255,61,.35);z-index:2}
-.price h3{font-size:26px;margin:10px 0}
-.price .amt{font-size:50px;font-weight:950;letter-spacing:-.07em;margin:14px 0 6px}
-.price .amt small{font-size:14px;font-weight:600;letter-spacing:0;color:#8e9995;margin-left:4px}
+.popular-badge{
+  position:absolute;top:0;right:22px;transform:translateY(-50%);
+  background:var(--acid);color:#081007;
+  font-size:9px;font-weight:700;letter-spacing:.16em;
+  padding:7px 12px;border-radius:100px;
+  box-shadow:0 6px 20px rgba(200,255,61,.35);z-index:2;text-transform:uppercase;
+}
+.price-tier{font-size:11px;color:var(--acid);letter-spacing:.16em;font-weight:700;text-transform:uppercase;margin-bottom:6px}
+.price h3{font-size:26px;margin:6px 0 4px;letter-spacing:-.02em}
+.price .amt{
+  font-family:var(--font-display);
+  font-variation-settings:'opsz' 144,'SOFT' 20,'WONK' 1;
+  font-weight:700;font-size:50px;
+  letter-spacing:-.05em;line-height:1;
+  margin:14px 0 6px;
+  font-variant-numeric:lining-nums tabular-nums;
+}
+.price .amt small{font-family:var(--font-body);font-size:14px;font-weight:500;letter-spacing:0;color:#8e9995;margin-left:4px}
 .price .sub{color:#7f8a85;font-size:11px;line-height:1.6}
 .price ul{list-style:none;padding:0;margin:28px 0 25px}
 .price li{padding:8px 0;color:#b0b9b5;font-size:12px;border-bottom:1px dashed rgba(255,255,255,.08)}
-.price li:before{content:"+";color:var(--acid);margin-right:8px}
+.price li:before{content:"+";color:var(--acid);margin-right:8px;font-family:var(--font-mono);font-weight:700}
 .price .btn{margin-top:auto;justify-content:center}
-
-.price-meta{margin:20px 0 8px;padding:14px 0;border-top:1px dashed rgba(255,255,255,.08);border-bottom:1px dashed rgba(255,255,255,.08);display:flex;flex-direction:column;gap:9px;font-size:12px}
+.price-meta{
+  margin:20px 0 8px;padding:14px 0;
+  border-top:1px dashed rgba(255,255,255,.08);
+  border-bottom:1px dashed rgba(255,255,255,.08);
+  display:flex;flex-direction:column;gap:9px;font-size:12px;
+}
 .price-meta div{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
 .price-meta span{color:#6f7b76;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:9px;flex-shrink:0}
-.price-meta b{color:#dce4df;font-weight:700;font-size:12px;text-align:right}
-.price-old{font-family:ui-monospace,monospace;font-size:14px;font-weight:700;color:#6f7b76;text-decoration:line-through;text-decoration-color:rgba(255,80,80,.85);text-decoration-thickness:2px;margin:4px 0 6px;letter-spacing:0.05em;opacity:0.85}
-.not-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#5a6560;font-weight:800;margin:8px 0 4px}
-.not-list{margin:0 0 25px !important;padding:0;list-style:none}
+.price-meta b{color:#dce4df;font-weight:600;font-size:12px;text-align:right;font-family:var(--font-body)}
+.price-old{font-family:var(--font-mono);font-size:14px;font-weight:500;color:#6f7b76;text-decoration:line-through;text-decoration-color:rgba(255,80,80,.85);text-decoration-thickness:2px;margin:4px 0 6px;letter-spacing:.02em;opacity:.85}
+.not-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#5a6560;font-weight:700;margin:8px 0 4px}
+.not-list{margin:0 0 25px!important;padding:0;list-style:none}
 .not-list li.not{padding:6px 0;color:#59635e;font-size:12px;border-bottom:1px dashed rgba(255,255,255,.04);text-decoration:line-through;text-decoration-color:rgba(255,255,255,.18)}
-.not-list li.not:before{content:"×" !important;color:#4d5853 !important;margin-right:8px;text-decoration:none;display:inline-block}
-.feature-illuminated{background:linear-gradient(90deg, rgba(85,230,255,.16), rgba(85,230,255,.02)) !important;border-left:3px solid var(--cyan) !important;padding:12px 14px !important;margin:0 0 14px !important;color:var(--cyan) !important;font-weight:800 !important;font-size:12px;letter-spacing:0.04em;text-shadow:0 0 14px rgba(85,230,255,.55);border-radius:3px;border-bottom:0 !important}
-.feature-illuminated:before{content:"" !important;margin-right:0 !important;display:none !important}
-.btn-mail-outline{display:block;width:100%;text-align:center;padding:12px 18px;margin-top:10px;border:1.5px solid var(--line);border-radius:3px;font-family:inherit;font-size:11px;font-weight:900;letter-spacing:0.12em;color:#c9d1cc;text-decoration:none;transition:all 0.25s ease;background:transparent;cursor:pointer;text-transform:uppercase}
+.not-list li.not:before{content:"×"!important;color:#4d5853!important;margin-right:8px;text-decoration:none;display:inline-block;font-family:var(--font-mono)}
+.feature-illuminated{
+  background:linear-gradient(90deg, rgba(85,230,255,.16), rgba(85,230,255,.02))!important;
+  border-left:3px solid var(--cyan)!important;
+  padding:12px 14px!important;margin:0 0 14px!important;
+  color:var(--cyan)!important;font-weight:600!important;font-size:12px;
+  letter-spacing:.02em;border-radius:3px;border-bottom:0!important;
+}
+.feature-illuminated:before{content:""!important;margin-right:0!important;display:none!important}
+.btn-mail-outline{
+  display:block;width:100%;text-align:center;padding:12px 18px;margin-top:10px;
+  border:1.5px solid var(--line);border-radius:3px;
+  font-family:var(--font-mono);font-size:11px;font-weight:600;
+  letter-spacing:.08em;color:#c9d1cc;text-decoration:none;
+  transition:all .25s ease;background:transparent;cursor:pointer;text-transform:uppercase;
+}
 .btn-mail-outline:hover{border-color:var(--acid);color:var(--acid);background:rgba(200,255,61,0.06);transform:translateY(-1px)}
 
-.domain-table{width:100%;border:1px solid var(--line);margin-bottom:12px}
-.domain-row{display:grid;grid-template-columns:2fr 1fr 1fr;border-bottom:1px solid var(--line)}
-.domain-row:last-child{border-bottom:none}
-.domain-row > div{padding:16px 20px;font-size:13px;color:#eef4ee}
-.domain-row.header{background:#0a0e10}
-.domain-row.header > div{font-size:11px;font-weight:700;color:var(--acid);letter-spacing:.12em;text-transform:uppercase}
-.domain-row .d-name{font-weight:600}
-.domain-row .d-name span{color:#8e9995;font-size:11px;font-weight:400;margin-left:6px}
-.domain-row .d-variable{color:var(--acid);font-weight:700}
+/* ---------- Products bento ---------- */
+.bento-products{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.bento-tile{
+  position:relative;display:flex;flex-direction:column;gap:14px;
+  padding:30px;border:1px solid var(--line);
+  background:rgba(255,255,255,.012);border-radius:4px;overflow:hidden;
+  transition:transform .5s cubic-bezier(.2,.7,.2,1),
+             border-color .3s,
+             background-color .3s,
+             box-shadow .5s;
+}
+.bento-domains{grid-column:span 4;grid-row:span 2}
+.bento-wa{grid-column:span 2;grid-row:span 2}
+.bento-migrate{grid-column:span 3}
+.bento-cta{
+  grid-column:span 3;
+  background:linear-gradient(135deg,rgba(200,255,61,.06),rgba(85,230,255,.03));
+}
+.bento-label{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--acid)}
+.bento-icon{font-size:22px;line-height:1;opacity:.85}
+.bento-tile h3{font-size:26px;letter-spacing:-.02em;line-height:1.1}
+.bento-amt{
+  font-family:var(--font-display);
+  font-variation-settings:'opsz' 144,'SOFT' 20,'WONK' 1;
+  font-weight:700;font-size:44px;letter-spacing:-.045em;line-height:1;margin:4px 0;
+  font-variant-numeric:lining-nums tabular-nums;
+}
+.bento-amt small{font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.06em;color:#8e9995;margin-left:6px}
+.bento-sub{font-family:var(--font-body);color:#8f9a95;font-size:13px;line-height:1.6;margin:0}
+.bento-list{list-style:none;padding:0;margin:0 0 10px}
+.bento-list li{padding:7px 0;font-size:12px;color:#b0b9b5;border-bottom:1px dashed rgba(255,255,255,.06)}
+.bento-list li:before{content:"+";color:var(--acid);margin-right:8px;font-family:var(--font-mono);font-weight:700}
+.bento-tile .btn{margin-top:auto;align-self:flex-start}
 
-.addon-grid{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.addon{padding:36px 28px;border-right:1px solid var(--line);display:flex;flex-direction:column;position:relative}
-.addon:last-child{border-right:0}
-.addon h3{font-size:24px;margin:10px 0 6px;letter-spacing:-.02em}
-.addon .amt{font-size:42px;font-weight:950;letter-spacing:-.07em;margin:8px 0 4px}
-.addon .amt small{font-size:13px;font-weight:600;letter-spacing:0;color:#8e9995;margin-left:6px}
-.addon .sub{color:#7f8a85;font-size:12px;line-height:1.6;margin-bottom:16px}
-.addon ul{list-style:none;padding:0;margin:0 0 24px 0}
-.addon li{padding:8px 0;color:#b0b9b5;font-size:12px;border-bottom:1px dashed rgba(255,255,255,.08)}
-.addon li:before{content:"+";color:var(--acid);margin-right:8px}
-.addon .btn{margin-top:auto;justify-content:center}
+.domain-mini{display:flex;flex-direction:column;margin:6px 0 14px;border-top:1px solid var(--line)}
+.domain-mini-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:13px 0;border-bottom:1px dashed rgba(255,255,255,.07);transition:background .3s}
+.dm-name{font-family:var(--font-body);font-size:14px;font-weight:600;color:#eef4ee}
+.dm-name span{font-family:var(--font-mono);font-size:10px;font-weight:400;color:#7a8580;margin-left:6px;letter-spacing:.02em}
+.dm-price{font-family:var(--font-display);font-variation-settings:'opsz' 48,'SOFT' 40,'WONK' 0;font-size:17px;font-weight:600;color:var(--acid);white-space:nowrap}
+.dm-price small{font-family:var(--font-mono);font-size:10px;color:#7a8580;font-weight:400;letter-spacing:.04em;margin-left:2px}
 
+/* ---------- FAQ ---------- */
 .faq{border-top:1px solid var(--line)}
-.q{border-bottom:1px solid var(--line)}
-.q button{width:100%;background:none;border:0;color:#eef4ee;text-align:left;padding:23px 0;font-weight:800;font-size:16px;display:flex;justify-content:space-between;align-items:center;font-family:inherit}
-.q button:after{content:"+";color:var(--acid);font-size:22px;transition:.3s}
+.q{border-bottom:1px solid var(--line);transition:background .3s}
+.q button{
+  width:100%;background:none;border:0;color:#eef4ee;text-align:left;
+  padding:23px 0;font-family:var(--font-display);
+  font-variation-settings:'opsz' 24,'SOFT' 40,'WONK' 0;
+  font-weight:600;font-size:16px;letter-spacing:-.01em;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:color .3s;
+}
+.q button:after{content:"+";color:var(--acid);font-size:22px;transition:.3s;font-family:var(--font-mono);font-weight:400}
 .q.open button:after{content:"−"}
 .answer{display:none;padding:0 60px 25px 0;color:#8f9a95;line-height:1.7;font-size:14px}
 .q.open .answer{display:block}
 
+/* ---------- Contact ---------- */
 .contact{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start}
-.contact h2{font-size:clamp(48px,7vw,92px);margin:0;line-height:.86;letter-spacing:-.07em}
-.contact h2 span{color:var(--acid)}
+.contact h2{font-size:clamp(48px,7vw,92px)}
+.contact h2 span{color:var(--acid);font-style:italic;font-weight:400;font-variation-settings:'opsz' 144,'SOFT' 100,'WONK' 1}
 .contact-side{border-top:1px solid var(--line)}
-.contact-item{display:flex;justify-content:space-between;gap:20px;padding:18px 0;border-bottom:1px solid var(--line);font-size:13px}
+.contact-item{display:flex;justify-content:space-between;gap:20px;padding:18px 0;border-bottom:1px solid var(--line);font-size:13px;transition:color .3s}
+.contact-item b{font-family:var(--font-body);font-weight:600;transition:color .3s}
 .contact-item span{color:#7f8a85;text-align:right}
 .wa-cta{display:flex;flex-direction:column;gap:12px;margin-top:36px}
-.wa-btn{display:flex;align-items:center;justify-content:center;gap:12px;padding:22px 24px;background:var(--acid);color:#081007;font-weight:900;font-size:15px;letter-spacing:.02em;border-radius:4px;border:0;transition:.2s;text-align:center}
+.wa-btn{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:22px 24px;background:var(--acid);color:#081007;
+  font-family:var(--font-mono);font-weight:600;font-size:13px;
+  letter-spacing:.04em;border-radius:4px;border:0;transition:.2s;text-align:center;
+}
 .wa-btn:hover{transform:translateY(-1px);box-shadow:0 12px 40px rgba(200,255,61,.25)}
 .wa-btn svg{width:22px;height:22px;fill:#081007;flex-shrink:0}
-.mail-btn{display:flex;align-items:center;justify-content:center;gap:12px;padding:20px 24px;background:transparent;color:var(--acid);border:1.5px solid var(--acid);font-weight:900;font-size:14px;letter-spacing:.02em;border-radius:4px;transition:.2s;text-align:center;text-decoration:none}
+.mail-btn{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:20px 24px;background:transparent;color:var(--acid);
+  border:1.5px solid var(--acid);
+  font-family:var(--font-mono);font-weight:600;font-size:12px;
+  letter-spacing:.04em;border-radius:4px;transition:.2s;text-align:center;text-decoration:none;
+}
 .mail-btn:hover{background:rgba(200,255,61,.08);transform:translateY(-1px);box-shadow:0 12px 30px rgba(200,255,61,.15)}
 .mail-btn svg{width:20px;height:20px;flex-shrink:0;color:var(--acid)}
+.wa-alt{margin:0;font-family:var(--font-body);color:#8f9a95;font-size:13px;text-align:center}
+.wa-alt a{color:var(--acid)}
 
-.wa-float{position:fixed;right:22px;bottom:22px;width:60px;height:60px;border-radius:50%;background:var(--acid);display:grid;place-items:center;z-index:99;box-shadow:0 12px 40px rgba(200,255,61,.35),0 0 0 0 rgba(200,255,61,.4);transition:.3s;animation:waPulse 2.4s infinite}
+/* ---------- WhatsApp float (no pulse) ---------- */
+.wa-float{
+  position:fixed;right:22px;bottom:22px;width:60px;height:60px;border-radius:50%;
+  background:var(--acid);display:grid;place-items:center;z-index:99;
+  box-shadow:0 12px 40px rgba(200,255,61,.35);transition:.3s;
+}
 .wa-float:hover{transform:scale(1.08)}
 .wa-float svg{width:30px;height:30px;fill:#081007}
-@keyframes waPulse{0%{box-shadow:0 12px 40px rgba(200,255,61,.35),0 0 0 0 rgba(200,255,61,.5)}70%{box-shadow:0 12px 40px rgba(200,255,61,.35),0 0 0 18px rgba(200,255,61,0)}100%{box-shadow:0 12px 40px rgba(200,255,61,.35),0 0 0 0 rgba(200,255,61,0)}}
 
+/* ---------- Footer ---------- */
 .footer{border-top:1px solid var(--line);padding:30px 24px;display:flex;justify-content:space-between;max-width:var(--max);margin:auto;color:#68736e;font-size:11px;flex-wrap:wrap;gap:15px}
-.footer-links{display:flex;gap:18px;flex-wrap:wrap}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap;letter-spacing:.06em}
 .footer-links a:hover{color:#eef4ee}
 
+/* ---------- Legal ---------- */
 .legal{display:none}
 .legal:target{display:block;position:fixed;inset:0;background:#070a0d;z-index:100;padding:40px 24px;overflow:auto}
 .legal-inner{max-width:850px;margin:auto}
-.legal-close{display:inline-block;margin-bottom:30px;color:var(--acid);font-weight:800;font-size:12px;letter-spacing:.1em}
-.legal h2{font-size:44px;letter-spacing:-.06em;margin-bottom:30px}
-.legal h3{margin-top:30px;font-size:16px}
-.legal p,.legal li{color:#9ba5a1;line-height:1.75;font-size:14px}
+.legal-close{display:inline-block;margin-bottom:30px;color:var(--acid);font-family:var(--font-mono);font-weight:600;font-size:12px;letter-spacing:.1em}
+.legal h2{font-size:44px;margin-bottom:30px;font-family:var(--font-display);font-variation-settings:'opsz' 144,'SOFT' 40,'WONK' 1;font-weight:600}
+.legal h3{margin-top:30px;font-size:13px;text-transform:uppercase}
+.legal p,.legal li{color:#9ba5a1;line-height:1.75;font-size:14px;font-family:var(--font-body)}
 .legal ul{padding-left:20px}
 
+/* ---------- Reveal ---------- */
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
 .reveal.on{opacity:1;transform:none}
-.no-js .reveal,body:not(.js-ready) .reveal{opacity:1 !important;transform:none !important}
-.cursor-light{position:fixed;width:280px;height:280px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(200,255,61,.07),transparent 68%);transform:translate(-50%,-50%);z-index:0}
+.no-js .reveal,body:not(.js-ready) .reveal{opacity:1!important;transform:none!important}
 
+/* ---------- Global hover (only on true hover devices) ---------- */
+@media (hover:hover) and (pointer:fine){
+  .price:hover,.bento-tile:hover{
+    transform:translateY(-6px);
+    border-color:rgba(200,255,61,.3);
+    background-color:rgba(255,255,255,.02);
+    box-shadow:0 24px 60px -28px rgba(0,0,0,.75),0 0 0 1px rgba(200,255,61,.05);
+  }
+  .price:hover::after{transform:translateX(110%)}
+  .price.popular:hover{background-color:rgba(200,255,61,.09);border-color:rgba(200,255,61,.5)}
+
+  .feature-tile:hover{
+    transform:translateY(-4px);
+    border-color:rgba(200,255,61,.28);
+    background-color:rgba(255,255,255,.02);
+    box-shadow:0 24px 60px -30px rgba(0,0,0,.7);
+  }
+  .feature-tile:hover h3{color:var(--acid)}
+  .feature-tile:hover .tag{background:var(--acid);color:#081007;border-color:var(--acid)}
+
+  .problem article:hover{background-color:rgba(255,255,255,.025)}
+  .problem article:hover .bigno{color:var(--acid)}
+  .how-step:hover{background-color:rgba(255,255,255,.025)}
+  .how-step:hover .num{color:var(--cyan)}
+  .q:hover{background-color:rgba(255,255,255,.02)}
+  .q:hover button{color:var(--acid)}
+  .contact-item:hover b{color:var(--acid)}
+  .domain-mini-row:hover{background:rgba(200,255,61,.03)}
+}
+
+/* ---------- Responsive ---------- */
+@media(max-width:1100px){
+  .features-bento{grid-template-columns:repeat(3,1fr)}
+  .feature-tile.large{grid-column:span 2}
+}
 @media(max-width:900px){
   .nav{height:68px;padding:0 18px}
-  .navlinks{display:none;position:absolute;top:68px;left:0;right:0;background:#0a0e10;border-bottom:1px solid var(--line);flex-direction:column;gap:0;padding:8px 0;transform:translateY(-12px);opacity:0;pointer-events:none;transition:.25s ease}
+  .navlinks{
+    display:none;position:absolute;top:68px;left:0;right:0;background:#0a0e10;
+    border-bottom:1px solid var(--line);flex-direction:column;gap:0;
+    padding:8px 0;transform:translateY(-12px);opacity:0;pointer-events:none;transition:.25s ease;
+  }
   .navlinks.show{display:flex;transform:translateY(0);opacity:1;pointer-events:auto}
-  .navlinks a{padding:16px 24px;font-size:14px;border-bottom:1px solid var(--line)}
+  .navlinks a{padding:16px 24px;font-size:12px;border-bottom:1px solid var(--line)}
   .navlinks a:last-child{border-bottom:0}
   .navcta{display:none}
   .menu{display:block}
-  
+
   .hero{display:block;min-height:auto;padding:50px 18px 20px}
-  .hero-bg{display:none} 
+  .hero-bg{display:none}
   .hero-content{padding:0}
-  .hero h1{font-size:clamp(48px,13vw,72px);margin-bottom:22px}
+  h1{font-size:clamp(48px,13vw,72px);margin-bottom:22px}
   .lead{font-size:15px}
-  
+
   .section{padding:70px 18px}
   .section-head{grid-template-columns:1fr;gap:16px;margin-bottom:36px}
   .section h2{font-size:44px}
@@ -255,81 +513,79 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
   .demo-wrap{grid-template-columns:1fr;min-height:auto}
   .demo-info{border-right:0;border-bottom:1px solid var(--line);padding:26px 20px}
   .demo-screen{display:none}
-  
-  .mobile-demo-cta { display: block; padding: 20px; text-align: center; }
-  .mobile-demo-cta .btn { width: 100%; justify-content: center; padding: 16px; }
-  
-  .feature{grid-template-columns:42px 1fr;gap:12px}
-  .feature p{grid-column:2}
-  .feature .tag{grid-column:2;justify-self:start}
+  .mobile-demo-cta{display:block;padding:20px;text-align:center}
+  .mobile-demo-cta .btn{width:100%;justify-content:center;padding:16px}
+
+  .features-bento{grid-template-columns:1fr 1fr}
+  .feature-tile.large{grid-column:span 2}
+  .feature-tile{padding:24px}
+
   .testimonial{grid-template-columns:1fr;gap:20px;padding:50px 0}
   .testi-quote{font-size:22px;padding-left:28px}
   .testi-quote:before{font-size:56px}
   .contact{grid-template-columns:1fr;gap:40px}
   .contact h2{font-size:48px}
   .footer{flex-direction:column;padding:25px 18px}
-  .cursor-light{display:none}
   .wa-float{width:54px;height:54px;right:16px;bottom:16px}
   .wa-float svg{width:26px;height:26px}
 
   .domain-row{grid-template-columns:1fr 1fr}
-  .domain-row > div:first-child{grid-column:1 / -1;border-bottom:1px dashed var(--line);}
+  .domain-row > div:first-child{grid-column:1 / -1;border-bottom:1px dashed var(--line)}
   .domain-row.header{display:none}
 
-  .addon-grid{grid-template-columns:1fr}
-  .addon{border-right:0;border-bottom:1px solid var(--line)}
-  .addon:last-child{border-bottom:0}
+  .bento-products{grid-template-columns:1fr 1fr}
+  .bento-domains,.bento-wa,.bento-migrate,.bento-cta{grid-column:span 2;grid-row:auto}
+}
+@media(max-width:560px){
+  .features-bento{grid-template-columns:1fr}
+  .feature-tile.large{grid-column:span 1}
+  .bento-products{grid-template-columns:1fr}
+  .bento-domains,.bento-wa,.bento-migrate,.bento-cta{grid-column:span 1}
 }
 @media(max-width:430px){
-  .hero h1{font-size:clamp(42px,11.5vw,56px)}
+  h1{font-size:clamp(42px,11.5vw,56px)}
   .section h2{font-size:38px}
   .price .amt{font-size:44px}
   .contact h2{font-size:42px}
+  .bento-amt{font-size:38px}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .reveal{opacity:1;transform:none;transition:none}
-  .wa-float{animation:none}
+  .price::after{display:none}
 }
-.t-reel{display:inline-flex;align-items:center;font-variant-numeric:tabular-nums;vertical-align:bottom}
-.t-reel-col{position:relative;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 78%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 78%,transparent 100%)}
-.t-reel-strip{display:flex;flex-direction:column;will-change:transform,filter}
-.t-reel-digit{display:flex;align-items:center;justify-content:center}
-@media (prefers-reduced-motion: reduce) {.t-reel-strip{transition:none !important;filter:none !important}}
-@media (min-width: 1440px) {
-  :root {--max: 1440px;}
-  .hero-content{padding:100px 24px 60px;}
-  .hero h1{font-size:clamp(80px,6.5vw,110px);}
-  .lead{font-size:20px;max-width:650px;}
-  .section{padding:160px 24px;}
-  .section-head{grid-template-columns:0.4fr 1.6fr;gap:60px;margin-bottom:80px;}
-  .section h2{font-size:clamp(70px,6.5vw,110px);}
-  .feature{grid-template-columns:120px 1fr 1fr;gap:50px;padding:40px 0;}
-  .testi-quote{font-size:clamp(28px,3vw,42px);}
-  .price{padding:50px 40px;}
-  .price .amt{font-size:60px;}
-  .addon{padding:50px 40px;}
-  .addon .amt{font-size:50px;}
-  .demo-wrap{grid-template-columns:340px 1fr;min-height:750px;}
-  .demo-info{padding:40px;}
-  .demo-screen iframe{min-height:750px;}
-  .contact{gap:100px;}
-  .contact h2{font-size:clamp(80px,7.5vw,120px);}
+
+/* ---------- Wide screens ---------- */
+@media (min-width:1440px){
+  :root{--max:1440px}
+  .hero-content{padding:100px 24px 60px}
+  h1{font-size:clamp(80px,6.5vw,110px)}
+  .lead{font-size:20px;max-width:650px}
+  .section{padding:160px 24px}
+  .section-head{grid-template-columns:.4fr 1.6fr;gap:60px;margin-bottom:80px}
+  .section h2{font-size:clamp(70px,6.5vw,110px)}
+  .testi-quote{font-size:clamp(28px,3vw,42px)}
+  .price{padding:50px 40px}
+  .price .amt{font-size:60px}
+  .bento-tile{padding:40px}
+  .bento-amt{font-size:50px}
+  .demo-wrap{grid-template-columns:340px 1fr;min-height:750px}
+  .demo-info{padding:40px}
+  .demo-screen iframe{min-height:750px}
+  .contact{gap:100px}
+  .contact h2{font-size:clamp(80px,7.5vw,120px)}
+  .feature-tile{padding:36px}
 }
-@media (min-width: 1920px) {
-  :root {--max: 1600px;}
-  .hero h1{font-size:120px;}
-  .section h2{font-size:120px;}
+@media (min-width:1920px){
+  :root{--max:1600px}
+  h1{font-size:120px}
+  .section h2{font-size:120px}
 }
 </style>
 </head>
 <body>
-<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
-  <defs><filter id="motion-blur"><feGaussianBlur in="SourceGraphic" stdDeviation="0 4" /></filter></defs>
-</svg>
 
 <div class="topline"></div>
-<div class="cursor-light" id="cursorLight"></div>
 
 <header class="nav">
   <a class="brand" href="#top">
@@ -361,16 +617,16 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
     <div class="hero-overlay"></div>
   </div>
   <div class="hero-content reveal">
-    <div class="eyebrow">CUSTOM SOFTWARE FOR REAL SHOPS</div>
+    <div class="eyebrow">Custom software for real shops</div>
     <h1>
       <span class="line solid">Your Shop.</span>
-      <span class="line outline">Your Rules.</span>
+      <span class="line em">Your Rules.</span>
       <span class="line solid">Your Steward.</span>
     </h1>
     <p class="lead">Custom-built inventory, billing and reports — running on your phone, in your language, priced for your business. Trusted like a steward, who never forgets a bill or loses a customer's dues.</p>
     <div class="actions">
-      <a class="btn primary" href="#demo">SEE LIVE DEMO ↗</a>
-      <a class="btn secondary" href="#contact">TALK TO ME →</a>
+      <a class="btn primary" href="#demo">See Live Demo ↗</a>
+      <a class="btn secondary" href="#contact">Talk to Me →</a>
     </div>
     <div class="trust">
       <span>◉ <b>30+ shops</b> already using</span>
@@ -382,7 +638,7 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
 </section>
 
 <div class="nipe-strip reveal">
-  <div class="niche-label">BUILT FOR SHOPS LIKE YOURS</div>
+  <div class="niche-label">Built for shops like yours</div>
   <div class="niche-row">
     <span class="niche-chip">Agriculture / Agro</span>
     <span class="niche-chip">Grocery / Kirana</span>
@@ -395,7 +651,7 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
 
 <section class="section reveal">
   <div class="steward-block">
-    <div class="section-no">WHY "STEWARD"</div>
+    <div class="section-no">Why "Steward"</div>
     <p class="steward-lead">
       A <b>steward</b> is the person a shop owner trusts to run everything when he isn't looking. He keeps the books. Tracks the stock. Remembers who owes what. Never sleeps, never forgets, never steals. <em>He doesn't own the shop — he makes sure it runs.</em><br><br>
       That's exactly what this software is.
@@ -404,7 +660,7 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
 </section>
 
 <section class="section reveal">
-  <div class="section-head"><div class="section-no">01 / WHY</div><h2>Generic software doesn't fit <em>your shop.</em></h2></div>
+  <div class="section-head"><div class="section-no">01 / Why</div><h2>Generic software doesn't fit <em>your shop.</em></h2></div>
   <div class="problem">
     <article><div class="bigno">01</div><h3>Wrong units, wrong categories</h3><p>Your shop has its own products, measurements and workflow. Your software should understand them — not force you into someone else's template.</p></article>
     <article><div class="bigno">02</div><h3>Paying for what you don't use</h3><p>Get the functions your business actually needs instead of a giant feature list designed for somebody else.</p></article>
@@ -413,22 +669,20 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
 </section>
 
 <section class="section reveal">
-  <div class="section-head"><div class="section-no">02 / PROCESS</div><h2>Three steps. <em>No jargon.</em></h2></div>
+  <div class="section-head"><div class="section-no">02 / Process</div><h2>Three steps. <em>No jargon.</em></h2></div>
   <div class="how">
-    <div class="how-step"><div class="num">STEP 01</div><h3>Tell me about your shop</h3><p>A 15-minute call. What you sell, what units you use, what language, what reports you need. I listen — you don't fill out forms.</p></div>
-    <div class="how-step"><div class="num">STEP 02</div><h3>I build a live demo for you</h3><p>You get a working link within days. Test it on your own products. Ask for changes. We refine until it fits like it was made for you — because it is.</p></div>
-    <div class="how-step"><div class="num">STEP 03</div><h3>You run your shop</h3><p>Daily auto-backup, printing, reports, and an AI agent that answers your questions. If something breaks, message me directly — not a ticket queue.</p></div>
+    <div class="how-step"><div class="num">Step 01</div><h3>Tell me about your shop</h3><p>A 15-minute call. What you sell, what units you use, what language, what reports you need. I listen — you don't fill out forms.</p></div>
+    <div class="how-step"><div class="num">Step 02</div><h3>I build a live demo for you</h3><p>You get a working link within days. Test it on your own products. Ask for changes. We refine until it fits like it was made for you — because it is.</p></div>
+    <div class="how-step"><div class="num">Step 03</div><h3>You run your shop</h3><p>Daily auto-backup, printing, reports, and an AI agent that answers your questions. If something breaks, message me directly — not a ticket queue.</p></div>
   </div>
 </section>
 
 <section class="section reveal">
-  <div style="border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:70px 0;text-align:center;">
-    <div class="section-no" style="margin-bottom:24px">TRUSTED ACROSS INDIA</div>
-    <div style="font-size:clamp(72px,12vw,140px);font-weight:950;letter-spacing:-.07em;line-height:.9;color:var(--acid);margin-bottom:20px;--reel-cell:clamp(65px,11vw,126px);">
-      <span class="spin-target" data-target="37" style="--reel-cell:clamp(65px,11vw,126px);">37</span>
-    </div>
-    <div style="font-size:clamp(18px,2.4vw,26px);color:#c9d1cc;font-weight:600;letter-spacing:-.02em;margin-bottom:32px;">shop owners run their business on ShopSteward</div>
-    <div class="niche-row" style="justify-content:center;">
+  <div class="trusted-block">
+    <div class="section-no" style="margin-bottom:24px">Trusted across India</div>
+    <div class="trusted-num">37</div>
+    <div class="trusted-tag">shop owners run their business on ShopSteward</div>
+    <div class="niche-row" style="justify-content:center">
       <span class="niche-chip">Agriculture</span>
       <span class="niche-chip">Grocery</span>
       <span class="niche-chip">Hardware</span>
@@ -440,23 +694,23 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
 </section>
 
 <section class="section reveal" id="demo">
-  <div class="section-head"><div class="section-no">03 / LIVE SYSTEM</div><h2>Don't take my word for it. <em>Open it.</em></h2></div>
+  <div class="section-head"><div class="section-no">03 / Live System</div><h2>Don't take my word for it. <em>Open it.</em></h2></div>
   <div class="demo-wrap">
     <aside class="demo-info">
       <div>
-        <div class="eyebrow">LIVE DEMO</div>
+        <div class="eyebrow">Live Demo</div>
         <h3>Try the actual app.</h3>
         <p class="copy">Use the demo to see inventory, billing, purchases, reports and the shop workflow in action.</p>
         <span class="demo-url">powerd-by-shopsteward.github.io/AI-added-Agri-Web</span>
       </div>
       <div class="credentials">
-        <small>DEMO LOGIN</small>
+        <small>Demo login</small>
         <div class="cred">EMAIL<br><code id="demoEmail">test@gmail.com</code></div>
         <div class="cred">PASSWORD<br><code id="demoPassword">123456</code></div>
         <div class="demo-actions">
-          <button class="mini" onclick="copyText('demoEmail', this)">COPY EMAIL</button>
-          <button class="mini" onclick="copyText('demoPassword', this)">COPY PASSWORD</button>
-          <a class="mini" href="https://powerd-by-shopsteward.github.io/AI-added-Agri-Web/" target="_blank" rel="noopener">OPEN ↗</a>
+          <button class="mini" onclick="copyText('demoEmail', this)">Copy Email</button>
+          <button class="mini" onclick="copyText('demoPassword', this)">Copy Password</button>
+          <a class="mini" href="https://powerd-by-shopsteward.github.io/AI-added-Agri-Web/" target="_blank" rel="noopener">Open ↗</a>
         </div>
       </div>
     </aside>
@@ -464,30 +718,82 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
       <iframe loading="lazy" src="https://powerd-by-shopsteward.github.io/AI-added-Agri-Web/" title="Live demo"></iframe>
     </div>
     <div class="mobile-demo-cta">
-      <a class="btn primary" href="https://powerd-by-shopsteward.github.io/AI-added-Agri-Web/" target="_blank" rel="noopener">OPEN LIVE DEMO ↗</a>
+      <a class="btn primary" href="https://powerd-by-shopsteward.github.io/AI-added-Agri-Web/" target="_blank" rel="noopener">Open Live Demo ↗</a>
     </div>
   </div>
 </section>
 
 <section class="section reveal" id="features">
-  <div class="section-head"><div class="section-no">04 / SYSTEM</div><h2>Everything in <em>one place.</em></h2></div>
-  <div class="features">
-    <div class="feature"><div class="feature-num">01</div><h3>Inventory Management</h3><p>Add, edit, track stock in real time. Low-stock alerts before you run out — not after a customer asks.</p></div>
-    <div class="feature"><div class="feature-num">02</div><h3>Sales &amp; Billing</h3><p>Create a bill in seconds. Save it, print it, share it. Thermal or A4 — whatever printer you already own.</p></div>
-    <div class="feature"><div class="feature-num">03</div><h3>Purchase Tracking</h3><p>Record every supplier purchase. Know your real cost per item and your true margin at any moment.</p></div>
-    <div class="feature"><div class="feature-num">04</div><h3>Customer &amp; Supplier Records</h3><p>Full contact history, purchase patterns, outstanding balance. Never lose track of who owes what.</p></div>
-    <div class="feature"><div class="feature-num">05</div><h3>Reports That Matter</h3><p>Daily sales, monthly summary, stock valuation, profit margins. Numbers you can act on, not 40-page exports.</p></div>
-    <div class="feature"><div class="feature-num">06</div><h3>Multi-Language</h3><p>Run the whole app in your language. Your staff shouldn't need English to do their job.</p></div>
-    <div class="feature"><div class="feature-num">07</div><h3>Auto Backup Every 24 Hours</h3><p>Your data exports automatically to Excel/JSON. Manual backup button too. Your business data, in your hands.</p></div>
-    <div class="feature"><div class="feature-num">08</div><h3>Works on Any Phone</h3><p>No app store. No install. Open it in Chrome or Safari on your phone and it just works.</p></div>
-    <div class="feature"><div class="feature-num">09</div><h3>Custom Units &amp; Categories</h3><p>Quintals, dozens, litres, bags, boxes. Your units, your categories, your business logic.</p></div>
-    <div class="feature"><div class="feature-num">10</div><h3>AI Agent</h3><p>Ask questions in plain language. "What sold most this week?" "Which items are about to expire?" The AI answers from your own shop data.</p><div class="tag">NEW</div></div>
+  <div class="section-head"><div class="section-no">04 / System</div><h2>Everything in <em>one place.</em></h2></div>
+  <div class="features-bento">
+
+    <article class="feature-tile large">
+      <div class="feature-num">01</div>
+      <h3>AI Agent</h3>
+      <p>Ask questions in plain language. "What sold most this week?" "Which items are about to expire?" The AI answers from your own shop data.</p>
+      <span class="tag">NEW</span>
+    </article>
+
+    <article class="feature-tile">
+      <div class="feature-num">02</div>
+      <h3>Inventory Management</h3>
+      <p>Add, edit, track stock in real time. Low-stock alerts before you run out.</p>
+    </article>
+
+    <article class="feature-tile">
+      <div class="feature-num">03</div>
+      <h3>Sales &amp; Billing</h3>
+      <p>Create a bill in seconds. Print thermal or A4 — whatever you already own.</p>
+    </article>
+
+    <article class="feature-tile">
+      <div class="feature-num">04</div>
+      <h3>Purchase Tracking</h3>
+      <p>Record every supplier purchase. Know your real cost and true margin.</p>
+    </article>
+
+    <article class="feature-tile">
+      <div class="feature-num">05</div>
+      <h3>Reports That Matter</h3>
+      <p>Daily sales, monthly summary, stock valuation, profit margins. Numbers you can act on.</p>
+    </article>
+
+    <article class="feature-tile">
+      <div class="feature-num">06</div>
+      <h3>Multi-Language</h3>
+      <p>Run the whole app in your language. Your staff shouldn't need English to do their job.</p>
+    </article>
+
+    <article class="feature-tile">
+      <div class="feature-num">07</div>
+      <h3>Auto Backup Every 24 Hours</h3>
+      <p>Data exports automatically to Excel/JSON. Manual backup button too. Your data, in your hands.</p>
+    </article>
+
+    <article class="feature-tile">
+      <div class="feature-num">08</div>
+      <h3>Works on Any Phone</h3>
+      <p>No app store. No install. Open it in Chrome or Safari and it just works.</p>
+    </article>
+
+    <article class="feature-tile">
+      <div class="feature-num">09</div>
+      <h3>Custom Units &amp; Categories</h3>
+      <p>Quintals, dozens, litres, bags, boxes. Your units, your categories, your business logic.</p>
+    </article>
+
+    <article class="feature-tile">
+      <div class="feature-num">10</div>
+      <h3>Customer &amp; Supplier Records</h3>
+      <p>Full contact history, purchase patterns, outstanding balance. Never lose track of who owes what.</p>
+    </article>
+
   </div>
 </section>
 
 <section class="section reveal">
   <div class="testimonial">
-  <div class="section-no">30+ HAPPY OWNERS</div>
+    <div class="section-no">30+ Happy Owners</div>
     <div>
       <p class="testi-quote">Pehle stock count karke register karne mein pura din nikal jaata tha. Ab ShopSteward ke saath stock har waqt mere table pe rehta hai — kaunsa product low hai, kya order karna hai, profit mein hoon ya ghate mein — sab kuch pata chalta hai. Mujhe motivation milti hai.</p>
       <div class="testi-author"><b>Gourgopal Das</b><span>Krishi Bandhu</span></div>
@@ -497,7 +803,7 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
 
 <section class="section reveal" id="pricing">
   <div class="section-head">
-    <div class="section-no">05 / PRICING</div>
+    <div class="section-no">05 / Pricing</div>
     <h2>Simple, <em>honest pricing.</em></h2>
   </div>
   <p class="copy" style="max-width:700px;margin-bottom:42px">
@@ -508,10 +814,10 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
   <div class="pricing">
 
     <article class="price">
-      <div class="section-no">TIER_01 // LIMITED OFFER</div>
+      <div class="price-tier">Essentials</div>
       <h3>Essentials, done right.</h3>
       <div class="price-old">₹4,899</div>
-      <div class="amt">₹<span class="spin-target" data-target="2999" style="--reel-cell:55px;">2,999</span></div>
+      <div class="amt">₹2,999</div>
       <div class="sub">first year · setup included<br>then <b style="color:#c8ff3d">₹599/year</b> from year 2</div>
 
       <div class="price-meta">
@@ -528,23 +834,23 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
         <li>Email Support</li>
       </ul>
 
-      <div class="not-label">NOT INCLUDED</div>
+      <div class="not-label">Not included</div>
       <ul class="not-list">
         <li class="not">Custom Logo</li>
         <li class="not">GST Billing</li>
         <li class="not">Custom Bill Design</li>
       </ul>
 
-      <a class="btn secondary" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20the%20BASE%20ShopSteward%20plan%20at%20%E2%82%B92%2C999%20(first%20year)%20with%20%E2%82%B9599%2Fyr%20renewal" target="_blank" rel="noopener">DEPLOY BASE — ₹2,999 →</a>
+      <a class="btn secondary" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20the%20BASE%20ShopSteward%20plan%20at%20%E2%82%B92%2C999%20(first%20year)%20with%20%E2%82%B9599%2Fyr%20renewal" target="_blank" rel="noopener">Deploy Base — ₹2,999 →</a>
       <a class="btn-mail-outline" href="mailto:shopsteward.in@gmail.com?subject=Base%20Plan%20Inquiry%20(%E2%82%B92%2C999)&body=Hi%20ShopSteward%2C%0A%0AI%20am%20interested%20in%20the%20BASE%20plan%20(%E2%82%B92%2C999%20first%20year%2C%20then%20%E2%82%B9599%2Fyr).%20Please%20share%20details.">✉ Email Inquiry</a>
     </article>
 
     <article class="price popular">
-      <div class="popular-badge">TIER_02 // MOST POPULAR · DISCOUNT ACTIVE</div>
-      <div class="section-no">CUSTOM</div>
+      <div class="popular-badge">Most Popular</div>
+      <div class="price-tier">Custom</div>
       <h3>Built around your shop.</h3>
       <div class="price-old">₹6,899</div>
-      <div class="amt">₹<span class="spin-target" data-target="3999" style="--reel-cell:55px;">3,999</span></div>
+      <div class="amt">₹3,999</div>
       <div class="sub">first year · setup included<br>then <b style="color:#c8ff3d">₹599/year</b> from year 2</div>
 
       <div class="price-meta">
@@ -565,15 +871,15 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
         <li>WhatsApp Support (10 AM – 6 PM)</li>
       </ul>
 
-      <a class="btn primary" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20the%20CUSTOM%20ShopSteward%20plan%20at%20%E2%82%B93%2C999%20(first%20year)%20with%20%E2%82%B9599%2Fyr%20renewal" target="_blank" rel="noopener">GET CUSTOM — ₹3,999 →</a>
+      <a class="btn primary" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20the%20CUSTOM%20ShopSteward%20plan%20at%20%E2%82%B93%2C999%20(first%20year)%20with%20%E2%82%B9599%2Fyr%20renewal" target="_blank" rel="noopener">Get Custom — ₹3,999 →</a>
       <a class="btn-mail-outline" href="mailto:shopsteward.in@gmail.com?subject=Custom%20Plan%20Inquiry%20(%E2%82%B93%2C999)&body=Hi%20ShopSteward%2C%0A%0AI%20am%20interested%20in%20the%20CUSTOM%20plan%20(%E2%82%B93%2C999%20first%20year%2C%20then%20%E2%82%B9599%2Fyr).%20Please%20share%20details.">✉ Email Inquiry</a>
     </article>
 
     <article class="price">
-      <div class="section-no">TIER_03 // AI ADVANCED</div>
+      <div class="price-tier">AI Advanced</div>
       <h3>Full Custom.</h3>
       <div class="price-old">₹14,999</div>
-      <div class="amt">₹<span class="spin-target" data-target="9999" style="--reel-cell:55px;">9,999</span></div>
+      <div class="amt">₹9,999</div>
       <div class="sub">first year · setup included<br>then <b style="color:#c8ff3d">₹599/year</b> from year 2</div>
 
       <div class="price-meta">
@@ -594,7 +900,7 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
         <li>Staff Video Training + Custom Domain</li>
       </ul>
 
-      <a class="btn secondary" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20the%20AI%20ADVANCED%20ShopSteward%20plan%20at%20%E2%82%B99%2C999%20(first%20year)%20with%20%E2%82%B9599%2Fyr%20renewal" target="_blank" rel="noopener">TALK TO ARCHITECT — ₹9,999 →</a>
+      <a class="btn secondary" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20the%20AI%20ADVANCED%20ShopSteward%20plan%20at%20%E2%82%B99%2C999%20(first%20year)%20with%20%E2%82%B9599%2Fyr%20renewal" target="_blank" rel="noopener">Talk to Architect — ₹9,999 →</a>
       <a class="btn-mail-outline" href="mailto:shopsteward.in@gmail.com?subject=AI%20Advanced%20Plan%20Inquiry%20(%E2%82%B99%2C999)&body=Hi%20ShopSteward%2C%0A%0AI%20am%20interested%20in%20the%20AI%20ADVANCED%20plan%20(%E2%82%B99%2C999%20first%20year%2C%20then%20%E2%82%B9599%2Fyr).%20Please%20share%20details.">✉ Email Inquiry</a>
     </article>
 
@@ -603,74 +909,65 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
 
 <section class="section reveal" id="products">
   <div class="section-head">
-    <div class="section-no">06 / PRODUCTS &amp; ADD-ONS</div>
+    <div class="section-no">06 / Products &amp; Add-ons</div>
     <h2>Domains &amp; <em>extra services.</em></h2>
   </div>
   <p class="copy" style="max-width:700px;margin-bottom:42px">
     Optional products you can add to any ShopSteward plan. Domains give you a professional web address, and our add-ons make your shop run even smoother.
   </p>
 
-  <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:#eef4ee;margin:0 0 20px 0;letter-spacing:-.02em;">🌐 Domains</h3>
-  <div class="domain-table">
-    <div class="domain-row header">
-      <div>Domain Type</div>
-      <div>First Time Setup</div>
-      <div>Annual Renewal</div>
-    </div>
-    <div class="domain-row">
-      <div class="d-name">.in Domain <span>(yourshop.in)</span></div>
-      <div>₹1,299</div>
-      <div>₹999/year</div>
-    </div>
-    <div class="domain-row">
-      <div class="d-name">.com Domain <span>(yourshop.com)</span></div>
-      <div>₹1,799</div>
-      <div>₹1,599/year</div>
-    </div>
-    <div class="domain-row">
-      <div class="d-name">Subdomain <span>(yourshop.shopsteward.in)</span></div>
-      <div>₹699</div>
-      <div>₹299/year</div>
-    </div>
-    <div class="domain-row">
-      <div class="d-name">Custom Domain <span>(any TLD)</span></div>
-      <div class="d-variable">Variable</div>
-      <div class="d-variable">Variable</div>
-    </div>
-  </div>
-  <p class="copy" style="font-size:12px;color:#8f9a95;margin:0 0 50px 0;">
-    * Or market price + ₹200 handling fee, whichever is applicable. Custom domain pricing depends on the TLD and availability. Contact us for a quote.
-  </p>
+  <div class="bento-products">
 
-  <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:#eef4ee;margin:0 0 20px 0;letter-spacing:-.02em;">✨ Add-on Services</h3>
-  <div class="addon-grid">
-
-    <article class="addon">
-      <div class="section-no">ADD-ON 01</div>
-      <h3>WhatsApp Business Integration</h3>
-      <div class="amt">₹1,499 <small>one-time</small></div>
-      <div class="sub">Send bills &amp; udhaar reminders directly to customer WhatsApp.</div>
-      <ul>
-        <li>Auto-send bill to customer's WhatsApp</li>
-        <li>Automatic udhaar payment reminders</li>
-        <li>Share reports with staff or partners</li>
-        <li>Works with your existing WhatsApp Business number</li>
-      </ul>
-      <a class="btn secondary" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20the%20WhatsApp%20Business%20Integration%20add-on%20(%E2%82%B91%2C499)." target="_blank" rel="noopener">ADD TO MY PLAN — ₹1,499 →</a>
+    <article class="bento-tile bento-domains">
+      <div class="bento-label">Domains</div>
+      <h3>Your own web address.</h3>
+      <div class="domain-mini">
+        <div class="domain-mini-row">
+          <div class="dm-name">.in <span>(yourshop.in)</span></div>
+          <div class="dm-price">₹1,299 <small>+ ₹999/yr</small></div>
+        </div>
+        <div class="domain-mini-row">
+          <div class="dm-name">.com <span>(yourshop.com)</span></div>
+          <div class="dm-price">₹1,799 <small>+ ₹1,599/yr</small></div>
+        </div>
+        <div class="domain-mini-row">
+          <div class="dm-name">Subdomain <span>(yourshop.shopsteward.in)</span></div>
+          <div class="dm-price">₹699 <small>+ ₹299/yr</small></div>
+        </div>
+        <div class="domain-mini-row">
+          <div class="dm-name">Custom TLD <span>(any TLD)</span></div>
+          <div class="dm-price">Variable</div>
+        </div>
+      </div>
+      <a class="btn secondary" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20a%20custom%20domain%20for%20my%20shop." target="_blank" rel="noopener">Get a Domain →</a>
     </article>
 
-    <article class="addon">
-      <div class="section-no">ADD-ON 02</div>
-      <h3>Data Migration &amp; Setup</h3>
-      <div class="amt">₹999 <small>one-time</small></div>
-      <div class="sub">We import your existing inventory from Excel, Tally, or Vyapar.</div>
-      <ul>
-        <li>Import existing products &amp; stock</li>
-        <li>Import customer list with udhaar balance</li>
-        <li>Set up your categories and units for you</li>
-        <li>Verify everything works before handover</li>
+    <article class="bento-tile bento-wa">
+      <div class="bento-label">Add-on 01</div>
+      <h3>WhatsApp Business</h3>
+      <div class="bento-amt">₹1,499 <small>one-time</small></div>
+      <p class="bento-sub">Send bills &amp; udhaar reminders directly to customer WhatsApp.</p>
+      <ul class="bento-list">
+        <li>Auto-send bill to customer</li>
+        <li>Udhaar payment reminders</li>
+        <li>Share reports with staff</li>
       </ul>
-      <a class="btn secondary" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20the%20Data%20Migration%20add-on%20(%E2%82%B9999)." target="_blank" rel="noopener">ADD TO MY PLAN — ₹999 →</a>
+      <a class="btn primary" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20WhatsApp%20Business%20(%E2%82%B91%2C499)." target="_blank" rel="noopener">Add — ₹1,499 →</a>
+    </article>
+
+    <article class="bento-tile bento-migrate">
+      <div class="bento-label">Add-on 02</div>
+      <h3>Data Migration</h3>
+      <div class="bento-amt">₹999 <small>one-time</small></div>
+      <p class="bento-sub">We import your existing inventory from Excel, Tally or Vyapar — verified before handover.</p>
+      <a class="btn secondary" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20Data%20Migration%20(%E2%82%B9999)." target="_blank" rel="noopener">Add — ₹999 →</a>
+    </article>
+
+    <article class="bento-tile bento-cta">
+      <div class="bento-label">Not sure?</div>
+      <h3>Build a bundle.</h3>
+      <p class="bento-sub">Tell me what your shop needs — I'll put together a package and a price that fits.</p>
+      <a class="btn primary" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20a%20custom%20bundle." target="_blank" rel="noopener">Talk to Me →</a>
     </article>
 
   </div>
@@ -693,7 +990,7 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
 <section class="section reveal" id="contact">
   <div class="contact">
     <div>
-      <div class="section-no">08 / CONTACT</div>
+      <div class="section-no">08 / Contact</div>
       <h2>Let's build<br><span>your</span> steward.</h2>
       <p class="copy" style="max-width:500px;margin-top:28px">Tell me what your shop needs. I'll reply within a day — usually much faster.</p>
     </div>
@@ -708,7 +1005,7 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
         </a>
         <a class="mail-btn" href="mailto:shopsteward.in@gmail.com?subject=Custom%20Shop%20Software%20Inquiry&body=Hi%20ShopSteward%2C%0A%0AMy%20shop%20name%3A%20%0ABusiness%20type%3A%20%0AWhat%20I%20need%3A%20%0APlan%20interested%20in%3A%20(Base%20%2F%20Custom%20%2F%20AI%20Advanced)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-          Send us an Email — shopsteward.in@gmail.com
+          Send us an Email
         </a>
         <p class="wa-alt">Or reach us directly on WhatsApp: <a href="https://wa.me/918637560557">+91 86375 60557</a></p>
       </div>
@@ -778,60 +1075,21 @@ h1 span.line:nth-child(3) { animation-delay: 0.7s; }
 
 <script>
 document.body.classList.add('js-ready');
+
 const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('on')), { threshold: .08 });
 document.querySelectorAll('.reveal').forEach(x => io.observe(x));
 setTimeout(() => { document.querySelectorAll('.reveal:not(.on)').forEach(x => x.classList.add('on')); }, 1500);
-const light = document.getElementById('cursorLight');
-window.addEventListener('pointermove', e => { light.style.left = e.clientX + 'px'; light.style.top = e.clientY + 'px'; });
+
 document.querySelectorAll('.q button').forEach(b => b.addEventListener('click', () => b.parentElement.classList.toggle('open')));
+
 async function copyText(id, btn) {
   const v = document.getElementById(id).textContent;
   try { await navigator.clipboard.writeText(v); const old = btn.textContent; btn.textContent = 'COPIED ✓'; setTimeout(() => btn.textContent = old, 1200); } catch (e) {}
 }
-document.querySelectorAll('#navLinks a').forEach(a => a.addEventListener('click', () => { document.getElementById('navLinks').classList.remove('show'); }));
 
-function initSpinners() {
-  const targets = document.querySelectorAll('.spin-target');
-  if (!targets.length) return;
-  targets.forEach(el => {
-    const targetStr = el.dataset.target; if (!targetStr) return;
-    let cellHeight = el.offsetHeight; if (!cellHeight || cellHeight < 10) cellHeight = 55;
-    el.style.display = 'inline-flex'; el.style.alignItems = 'center'; el.style.lineHeight = '1';
-    const chars = targetStr.split(''); let spinIndex = 0; el.innerHTML = '';
-    chars.forEach(char => {
-      if (char === ',') {
-        const comma = document.createElement('div'); comma.className = 't-reel-digit'; comma.style.height = `${cellHeight}px`; comma.textContent = ','; el.appendChild(comma);
-      } else {
-        const col = document.createElement('div'); col.className = 't-reel-col'; col.style.height = `${cellHeight}px`;
-        const strip = document.createElement('div'); strip.className = 't-reel-strip';
-        const targetDigit = parseInt(char); const spins = 3; const totalCells = (spins * 10) + targetDigit;
-        for (let i = 0; i <= totalCells; i++) {
-          const digitDiv = document.createElement('div'); digitDiv.className = 't-reel-digit'; digitDiv.style.height = `${cellHeight}px`; digitDiv.textContent = i % 10; strip.appendChild(digitDiv);
-        }
-        col.appendChild(strip); el.appendChild(col); col.dataset.totalCells = totalCells; col.dataset.staggerIndex = spinIndex; spinIndex++;
-      }
-    });
-  });
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => { if (entry.isIntersecting) { animateReel(entry.target); observer.unobserve(entry.target); } });
-  }, { threshold: 0.2 });
-  targets.forEach(t => observer.observe(t));
-}
-function animateReel(reelEl) {
-  if (reelEl.dataset.animated) return; reelEl.dataset.animated = 'true';
-  const cols = reelEl.querySelectorAll('.t-reel-col');
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  cols.forEach((col) => {
-    const totalCells = parseInt(col.dataset.totalCells); const cellHeight = parseFloat(col.style.height);
-    const strip = col.querySelector('.t-reel-strip'); const staggerIndex = parseInt(col.dataset.staggerIndex) || 0; const stagger = staggerIndex * 90;
-    if (prefersReducedMotion) { strip.style.transform = `translateY(-${totalCells * cellHeight}px)`; return; }
-    strip.style.transition = `transform 1400ms cubic-bezier(0.16, 1, 0.3, 1) ${stagger}ms, filter 1400ms cubic-bezier(0.16, 1, 0.3, 1) ${stagger}ms`;
-    strip.style.filter = 'url(#motion-blur)'; void strip.offsetHeight;
-    strip.style.transform = `translateY(-${totalCells * cellHeight}px)`;
-    setTimeout(() => { strip.style.filter = 'none'; }, 1400 + stagger);
-  });
-}
-if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initSpinners); } else { initSpinners(); }
+document.querySelectorAll('#navLinks a').forEach(a => a.addEventListener('click', () => {
+  document.getElementById('navLinks').classList.remove('show');
+}));
 </script>
 </body>
 </html>
