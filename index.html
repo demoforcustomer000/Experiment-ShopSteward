@@ -352,7 +352,6 @@ h1 span.line:nth-child(3){animation-delay:.7s}
   background:linear-gradient(135deg,rgba(200,255,61,.06),rgba(85,230,255,.03));
 }
 .bento-label{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--acid)}
-.bento-icon{font-size:22px;line-height:1;opacity:.85}
 .bento-tile h3{font-size:26px;letter-spacing:-.02em;line-height:1.1}
 .bento-amt{
   font-family:var(--font-display);
@@ -447,6 +446,29 @@ h1 span.line:nth-child(3){animation-delay:.7s}
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
 .reveal.on{opacity:1;transform:none}
 .no-js .reveal,body:not(.js-ready) .reveal{opacity:1!important;transform:none!important}
+
+/* ---------- Reel counter (Fraunces edition) ---------- */
+.t-reel{
+  display:inline-flex;align-items:center;
+  font-variant-numeric:tabular-nums;
+  vertical-align:bottom;
+  font-family:var(--font-display);
+  font-variation-settings:'opsz' 144,'SOFT' 20,'WONK' 1;
+  font-weight:700;
+  letter-spacing:-.05em;
+  line-height:1;
+  color:inherit;
+}
+.t-reel-col{
+  position:relative;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 78%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 78%,transparent 100%);
+}
+.t-reel-strip{display:flex;flex-direction:column;will-change:transform,filter}
+.t-reel-digit{display:flex;align-items:center;justify-content:center}
+@media (prefers-reduced-motion: reduce){
+  .t-reel-strip{transition:none !important;filter:none !important}
+}
 
 /* ---------- Global hover (only on true hover devices) ---------- */
 @media (hover:hover) and (pointer:fine){
@@ -585,6 +607,10 @@ h1 span.line:nth-child(3){animation-delay:.7s}
 </head>
 <body>
 
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs><filter id="motion-blur"><feGaussianBlur in="SourceGraphic" stdDeviation="0 4" /></filter></defs>
+</svg>
+
 <div class="topline"></div>
 
 <header class="nav">
@@ -680,7 +706,7 @@ h1 span.line:nth-child(3){animation-delay:.7s}
 <section class="section reveal">
   <div class="trusted-block">
     <div class="section-no" style="margin-bottom:24px">Trusted across India</div>
-    <div class="trusted-num">37</div>
+    <div class="trusted-num"><span class="spin-target" data-target="37">37</span></div>
     <div class="trusted-tag">shop owners run their business on ShopSteward</div>
     <div class="niche-row" style="justify-content:center">
       <span class="niche-chip">Agriculture</span>
@@ -817,7 +843,7 @@ h1 span.line:nth-child(3){animation-delay:.7s}
       <div class="price-tier">Essentials</div>
       <h3>Essentials, done right.</h3>
       <div class="price-old">₹4,899</div>
-      <div class="amt">₹2,999</div>
+      <div class="amt">₹<span class="spin-target" data-target="2999">2,999</span></div>
       <div class="sub">first year · setup included<br>then <b style="color:#c8ff3d">₹599/year</b> from year 2</div>
 
       <div class="price-meta">
@@ -850,7 +876,7 @@ h1 span.line:nth-child(3){animation-delay:.7s}
       <div class="price-tier">Custom</div>
       <h3>Built around your shop.</h3>
       <div class="price-old">₹6,899</div>
-      <div class="amt">₹3,999</div>
+      <div class="amt">₹<span class="spin-target" data-target="3999">3,999</span></div>
       <div class="sub">first year · setup included<br>then <b style="color:#c8ff3d">₹599/year</b> from year 2</div>
 
       <div class="price-meta">
@@ -879,7 +905,7 @@ h1 span.line:nth-child(3){animation-delay:.7s}
       <div class="price-tier">AI Advanced</div>
       <h3>Full Custom.</h3>
       <div class="price-old">₹14,999</div>
-      <div class="amt">₹9,999</div>
+      <div class="amt">₹<span class="spin-target" data-target="9999">9,999</span></div>
       <div class="sub">first year · setup included<br>then <b style="color:#c8ff3d">₹599/year</b> from year 2</div>
 
       <div class="price-meta">
@@ -1090,6 +1116,116 @@ async function copyText(id, btn) {
 document.querySelectorAll('#navLinks a').forEach(a => a.addEventListener('click', () => {
   document.getElementById('navLinks').classList.remove('show');
 }));
+
+/* ---------- Reel counter ---------- */
+function initSpinners(){
+  const targets = document.querySelectorAll('.spin-target');
+  if (!targets.length) return;
+
+  targets.forEach(el => {
+    const targetStr = el.dataset.target;
+    if (!targetStr) return;
+
+    // Make it inline-flex first, then measure so the cell height matches the
+    // parent's rendered font size (50px on prices, ~126px on the big 37).
+    el.style.display = 'inline-flex';
+    el.style.alignItems = 'center';
+    el.style.lineHeight = '1';
+    el.classList.add('t-reel');
+
+    void el.offsetHeight;
+    let cellHeight = el.offsetHeight;
+    if (!cellHeight || cellHeight < 10) {
+      cellHeight = (el.parentElement && el.parentElement.offsetHeight) || 55;
+    }
+
+    el.innerHTML = '';
+
+    const chars = targetStr.split('');
+    let spinIndex = 0;
+
+    chars.forEach(char => {
+      if (char === ',') {
+        const comma = document.createElement('div');
+        comma.className = 't-reel-digit';
+        comma.style.height = cellHeight + 'px';
+        comma.textContent = ',';
+        el.appendChild(comma);
+        return;
+      }
+
+      const col = document.createElement('div');
+      col.className = 't-reel-col';
+      col.style.height = cellHeight + 'px';
+
+      const strip = document.createElement('div');
+      strip.className = 't-reel-strip';
+
+      const targetDigit = parseInt(char, 10);
+      const spins = 3;
+      const totalCells = (spins * 10) + targetDigit;
+
+      for (let i = 0; i <= totalCells; i++) {
+        const d = document.createElement('div');
+        d.className = 't-reel-digit';
+        d.style.height = cellHeight + 'px';
+        d.textContent = i % 10;
+        strip.appendChild(d);
+      }
+
+      col.appendChild(strip);
+      el.appendChild(col);
+
+      col.dataset.totalCells = totalCells;
+      col.dataset.staggerIndex = spinIndex;
+      spinIndex++;
+    });
+  });
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { animateReel(e.target); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.2 });
+
+  targets.forEach(t => obs.observe(t));
+}
+
+function animateReel(reelEl){
+  if (reelEl.dataset.animated) return;
+  reelEl.dataset.animated = 'true';
+
+  const cols = reelEl.querySelectorAll('.t-reel-col');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  cols.forEach(col => {
+    const totalCells = parseInt(col.dataset.totalCells, 10);
+    const cellHeight = parseFloat(col.style.height);
+    const strip = col.querySelector('.t-reel-strip');
+    const staggerIndex = parseInt(col.dataset.staggerIndex, 10) || 0;
+    const stagger = staggerIndex * 90;
+
+    if (reduce) {
+      strip.style.transform = `translateY(-${totalCells * cellHeight}px)`;
+      return;
+    }
+
+    strip.style.transition =
+      `transform 1400ms cubic-bezier(0.16, 1, 0.3, 1) ${stagger}ms,` +
+      `filter 1400ms cubic-bezier(0.16, 1, 0.3, 1) ${stagger}ms`;
+    strip.style.filter = 'url(#motion-blur)';
+    void strip.offsetHeight;
+    strip.style.transform = `translateY(-${totalCells * cellHeight}px)`;
+
+    setTimeout(() => { strip.style.filter = 'none'; }, 1400 + stagger);
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSpinners);
+} else {
+  initSpinners();
+}
 </script>
 </body>
 </html>
