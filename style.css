@@ -368,17 +368,78 @@ body:has(.spotlight-card:hover) .spotlight-card:hover {
 }
 
 @media (max-width: 900px) {
-    .navbar { padding: 15px 20px; }
-    .nav-links { display: none; position: absolute; top: 70px; left: 0; width: 100%; background: #0a0a0a; flex-direction: column; padding: 20px; border-bottom: 1px solid var(--glass-border); }
-    .nav-links.show { display: flex; }
-    .menu-btn { display: block; }
-    .hero { flex-direction: column; height: auto; padding: 120px 20px 60px; }
-    .hero-content { flex-direction: column; text-align: center; gap: 40px; }
-    .hero-text h1 { font-size: 3rem; }
-    .hero-actions { justify-content: center; }
-    .hero-overlay { background: linear-gradient(0deg, #0a0a0a 0%, rgba(10,10,10,0.8) 100%); }
-    .hero-card { width: 100%; max-width: 500px; }
+    .navbar { 
+        padding: 15px 20px; 
+        background: rgba(18, 28, 23, 0.95); /* Matches new backdrop */
+        backdrop-filter: blur(10px);
+    }
     
+    /* 1. Hide the bulky buttons in the header on mobile */
+    .nav-actions { 
+        display: none; 
+    }
+    
+    /* 2. Ensure the hamburger menu sits on the right */
+    .menu-btn { 
+        display: block; 
+        margin-left: auto;
+    }
+    
+    .nav-links { 
+        display: none; 
+        position: absolute; 
+        top: 70px; 
+        left: 0; 
+        width: 100%; 
+        background: #121c17; 
+        flex-direction: column; 
+        padding: 20px; 
+        border-bottom: 1px solid var(--glass-border); 
+    }
+    .nav-links.show { 
+        display: flex; 
+    }
+
+    /* Hero Adjustments for Tablet/Mobile */
+    .hero { 
+        flex-direction: column; 
+        height: auto; 
+        padding: 120px 20px 60px; 
+    }
+    
+    .hero-content { 
+        flex-direction: column; 
+        text-align: center; 
+        gap: 40px; 
+    }
+    
+    .hero-text h1 { 
+        font-size: 3rem; 
+    }
+    
+    /* Stack the hero buttons neatly */
+    .hero-actions { 
+        justify-content: center; 
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .hero-actions a {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero-overlay { 
+        background: linear-gradient(0deg, #121c17 0%, rgba(18, 28, 23, 0.85) 100%); 
+    }
+    
+    .hero-card { 
+        width: 100%; 
+        max-width: 500px; 
+        margin: 0 auto;
+    }
+    
+    /* Grids */
     .grid-3 { grid-template-columns: 1fr; }
     .grid-2 { grid-template-columns: 1fr; }
     .demo-wrap { grid-template-columns: 1fr; }
@@ -390,12 +451,69 @@ body:has(.spotlight-card:hover) .spotlight-card:hover {
 }
 
 @media (max-width: 600px) {
-    .hero-text h1 { font-size: 2.5rem; }
-    .section { padding: 60px 20px; }
-    .section h2 { font-size: 2rem; }
-    .steward-block, .testimonial-card, .contact-card { padding: 30px 20px; }
-    .features-grid { grid-template-columns: 1fr; }
-    .domain-grid { grid-template-columns: 1fr; }
-    .wa-cta { flex-direction: column; }
-    .nav-actions .btn-ghost { display: none; }
+    /* 1. Hide the badge so the logo and name don't squish */
+    .badge { 
+        display: none; 
+    }
+    
+    .brand-name { 
+        font-size: 1.1rem; 
+    }
+    
+    .logo-img { 
+        height: 28px; 
+    }
+
+    /* Hero Text */
+    .hero-text h1 { 
+        font-size: 2.2rem; 
+    }
+    
+    .hero-text .lead { 
+        font-size: 1rem; 
+    }
+    
+    .section { 
+        padding: 60px 20px; 
+    }
+    
+    .section h2 { 
+        font-size: 2rem; 
+    }
+    
+    .steward-block, .testimonial-card, .contact-card { 
+        padding: 30px 20px; 
+    }
+    
+    .features-grid { 
+        grid-template-columns: 1fr; 
+    }
+    
+    .domain-grid { 
+        grid-template-columns: 1fr; 
+    }
+    
+    /* 2. Make the glass card fit perfectly */
+    .hero-card {
+        padding: 24px 20px;
+    }
+    
+    .hero-card h3 {
+        font-size: 1.1rem;
+    }
+
+    /* 3. Make the tags wrap if the screen is too small */
+    .card-tags {
+        flex-wrap: wrap;
+    }
+    
+    .card-input-area textarea {
+        height: 120px;
+        font-size: 0.9rem;
+        padding: 15px 60px 15px 15px;
+    }
+
+    .wa-cta { 
+        flex-direction: column; 
+    }
 }
