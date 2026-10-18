@@ -1,0 +1,340 @@
+/* --- 1. Variables & Reset --- */
+:root {
+    --bg-dark: #0a0a0a;
+    --text-light: #f3f4f6;
+    --text-muted: #9ca3af;
+    
+    /* Deep Dark Muddy Green */
+    --muddy-green: #2b3c32; 
+    --muddy-green-hover: #3a4f42;
+    
+    /* Glass Effect */
+    --glass-bg: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    
+    --font-sans: 'Manrope', sans-serif;
+    --font-serif: 'Fraunces', serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* --- 2. Header / Navigation --- */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.logo-icon {
+    background-color: var(--muddy-green);
+    color: white;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.badge {
+    font-size: 0.7rem;
+    background: rgba(255,255,255,0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+    color: var(--text-muted);
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.nav-links a:hover { color: white; }
+
+.nav-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+/* --- 3. Buttons --- */
+.btn-ghost {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    padding: 10px 20px;
+}
+
+.btn-primary {
+    background-color: var(--muddy-green);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--muddy-green-hover);
+}
+
+.btn-primary.large {
+    padding: 14px 28px;
+    font-size: 1rem;
+}
+
+.btn-secondary.large {
+    padding: 14px 28px;
+    font-size: 1rem;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50px;
+    transition: 0.3s;
+}
+
+.btn-secondary.large:hover { background: rgba(255,255,255,0.2); }
+
+/* --- 4. Hero Section --- */
+.hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Gradient overlay to make text readable */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.7) 50%, rgba(10,10,10,0.4) 100%);
+}
+
+.hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 50px;
+}
+
+/* Typography */
+.hero-text { max-width: 600px; }
+
+.hero-text h1 {
+    font-size: 4.5rem;
+    line-height: 1.1;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.serif-text {
+    font-family: var(--font-serif);
+    color: var(--muddy-green); /* The green accent! */
+    font-style: italic;
+    font-weight: 400;
+}
+
+.hero-text p {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+/* --- 5. The Transparent Glass Card --- */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.hero-card {
+    width: 450px;
+    padding: 30px;
+    border-radius: 30px;
+}
+
+.hero-card h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.card-tags {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.tag {
+    background: rgba(255,255,255,0.1);
+    padding: 8px 14px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.add-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-input-area {
+    position: relative;
+}
+
+.card-input-area textarea {
+    width: 100%;
+    height: 120px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 15px;
+    color: white;
+    font-family: var(--font-sans);
+    resize: none;
+    outline: none;
+}
+
+.card-input-area textarea:focus {
+    border-color: var(--muddy-green);
+}
+
+.submit-circle {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-circle:hover {
+    background: var(--muddy-green);
+}
+
+/* --- 6. Sections Below --- */
+.section {
+    padding: 100px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 3rem;
+    margin-bottom: 50px;
+    font-weight: 500;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.feature-card {
+    padding: 30px;
+}
+
+.feature-card h3 {
+    margin-bottom: 10px;
+    color: white;
+}
+
+.feature-card p {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* --- 7. Mobile Responsiveness --- */
+@media (max-width: 1024px) {
+    .hero-content {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        padding-top: 100px;
+    }
+    
+    .hero-text h1 { font-size: 3rem; }
+    .hero-buttons { justify-content: center; }
+    .nav-links { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+}
