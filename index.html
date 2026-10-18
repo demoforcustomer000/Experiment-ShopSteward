@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShopSteward — The Trusted Software That Runs Your Shop</title>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Manrope:wght@300..800&display=swap" rel="stylesheet">
@@ -14,13 +13,19 @@
 </head>
 <body>
 
+    <!-- SPOTLIGHT OVERLAY (Blurs everything behind the hovered card) -->
+    <div class="spotlight-overlay"></div>
+
     <!-- NAVBAR -->
     <header class="navbar">
         <a href="#top" class="logo-area">
-            <!-- YOUR LOGO -->
-            <img src="logo.png" alt="ShopSteward Logo" class="logo-img">
+            <!-- YOUR LOGO WITH AUTOMATIC FALLBACK -->
+            <img src="logo.png" alt="ShopSteward Logo" class="logo-img" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
+            <svg id="fallbackLogo" style="display:none; height:32px; width:auto; fill:var(--green);" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                <path d="M32 8C20 8 12 17 12 28C12 35 16 41 22 44V56C22 57.5 23 58 24 58C25 58 26 57.5 26 56V48H32C33.5 48 34 47 34 46C34 45 33.5 44 32 44H26V40H32C33.5 40 34 39 34 38C34 37 33.5 36 32 36H26V44C26 46 24 46 22 46C20 46 18 44 18 42C18 36 26 32 32 32C43 32 52 23 52 12C52 10 51 8 50 8H32Z"/>
+            </svg>
             <span class="brand-name">ShopSteward</span>
-            <span class="badge">By TutorCruncher</span>
+            <span class="badge">By ShopSteward.in</span>
         </a>
         
         <nav class="nav-links" id="navLinks">
@@ -45,6 +50,7 @@
         <!-- HERO -->
         <section class="hero">
             <div class="hero-bg">
+                <!-- YOUR HERO IMAGE WITH AUTOMATIC FALLBACK -->
                 <img src="shop-owner.png" alt="Shop Owner" onerror="this.src='https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2000&auto=format&fit=crop'">
                 <div class="hero-overlay"></div>
             </div>
@@ -62,8 +68,8 @@
                     </div>
                 </div>
 
-                <!-- THE GLASS CARD (AI Prompt Mockup) -->
-                <div class="hero-card glass">
+                <!-- HERO GLASS CARD -->
+                <div class="hero-card glass spotlight-card reveal">
                     <h3>Create your shop plan</h3>
                     
                     <div class="card-tags">
@@ -94,8 +100,8 @@
         </div>
 
         <!-- WHY STEWARD -->
-        <section class="section reveal">
-            <div class="steward-block glass">
+        <section class="section">
+            <div class="steward-block glass spotlight-card reveal">
                 <div class="section-no">WHY "STEWARD"</div>
                 <p class="steward-lead">
                     A <b>steward</b> is the person a shop owner trusts to run everything when he isn't looking. He keeps the books. Tracks the stock. Remembers who owes what. Never sleeps, never forgets, never steals. <em>He doesn't own the shop — he makes sure it runs.</em><br><br>
@@ -105,23 +111,23 @@
         </section>
 
         <!-- WHY -->
-        <section class="section reveal">
-            <div class="section-head">
+        <section class="section">
+            <div class="section-head reveal">
                 <div class="section-no">01 / WHY</div>
                 <h2>Generic software doesn't fit <em>your shop.</em></h2>
             </div>
             <div class="grid-3">
-                <article class="glass card">
+                <article class="glass card spotlight-card reveal">
                     <div class="bigno">01</div>
                     <h3>Wrong units, wrong categories</h3>
                     <p>Your shop has its own products, measurements and workflow. Your software should understand them — not force you into someone else's template.</p>
                 </article>
-                <article class="glass card">
+                <article class="glass card spotlight-card reveal">
                     <div class="bigno">02</div>
                     <h3>Paying for what you don't use</h3>
                     <p>Get the functions your business actually needs instead of a giant feature list designed for somebody else.</p>
                 </article>
-                <article class="glass card">
+                <article class="glass card spotlight-card reveal">
                     <div class="bigno">03</div>
                     <h3>No one to talk to</h3>
                     <p>Talk directly to the person who builds your software — not a ticket maze.</p>
@@ -130,23 +136,23 @@
         </section>
 
         <!-- PROCESS -->
-        <section class="section reveal" id="how-it-works">
-            <div class="section-head">
+        <section class="section" id="how-it-works">
+            <div class="section-head reveal">
                 <div class="section-no">02 / PROCESS</div>
                 <h2>Three steps. <em>No jargon.</em></h2>
             </div>
             <div class="grid-3">
-                <div class="glass card">
+                <div class="glass card spotlight-card reveal">
                     <div class="num">STEP 01</div>
                     <h3>Tell me about your shop</h3>
                     <p>A 15-minute call. What you sell, what units you use, what language, what reports you need. I listen — you don't fill out forms.</p>
                 </div>
-                <div class="glass card">
+                <div class="glass card spotlight-card reveal">
                     <div class="num">STEP 02</div>
                     <h3>I build a live demo for you</h3>
                     <p>You get a working link within days. Test it on your own products. Ask for changes. We refine until it fits like it was made for you — because it is.</p>
                 </div>
-                <div class="glass card">
+                <div class="glass card spotlight-card reveal">
                     <div class="num">STEP 03</div>
                     <h3>You run your shop</h3>
                     <p>Daily auto-backup, printing, reports, and an AI agent that answers your questions. If something breaks, message me directly — not a ticket queue.</p>
@@ -155,8 +161,8 @@
         </section>
 
         <!-- TRUSTED ACROSS INDIA -->
-        <section class="section reveal text-center">
-            <div class="glass trusted-block">
+        <section class="section text-center">
+            <div class="glass trusted-block spotlight-card reveal">
                 <div class="section-no">TRUSTED ACROSS INDIA</div>
                 <div class="trusted-num">
                     <span class="spin-target" data-target="37">37</span>
@@ -166,12 +172,12 @@
         </section>
 
         <!-- LIVE DEMO -->
-        <section class="section reveal" id="demo">
-            <div class="section-head">
+        <section class="section" id="demo">
+            <div class="section-head reveal">
                 <div class="section-no">03 / LIVE SYSTEM</div>
                 <h2>Don't take my word for it. <em>Open it.</em></h2>
             </div>
-            <div class="demo-wrap glass">
+            <div class="demo-wrap glass spotlight-card reveal">
                 <aside class="demo-info">
                     <div>
                         <div class="eyebrow">LIVE DEMO</div>
@@ -197,28 +203,28 @@
         </section>
 
         <!-- FEATURES -->
-        <section class="section reveal" id="features">
-            <div class="section-head">
+        <section class="section" id="features">
+            <div class="section-head reveal">
                 <div class="section-no">04 / SYSTEM</div>
                 <h2>Everything in <em>one place.</em></h2>
             </div>
             <div class="features-grid">
-                <div class="glass card"><h3>01. Inventory Management</h3><p>Add, edit, track stock in real time. Low-stock alerts before you run out.</p></div>
-                <div class="glass card"><h3>02. Sales & Billing</h3><p>Create a bill in seconds. Save it, print it, share it. Thermal or A4.</p></div>
-                <div class="glass card"><h3>03. Purchase Tracking</h3><p>Record every supplier purchase. Know your real cost per item and true margin.</p></div>
-                <div class="glass card"><h3>04. Customer Records</h3><p>Full contact history, purchase patterns, outstanding balance. Never lose track.</p></div>
-                <div class="glass card"><h3>05. Reports That Matter</h3><p>Daily sales, monthly summary, stock valuation, profit margins.</p></div>
-                <div class="glass card"><h3>06. Multi-Language</h3><p>Run the whole app in your language. Your staff shouldn't need English.</p></div>
-                <div class="glass card"><h3>07. Auto Backup</h3><p>Data exports automatically to Excel/JSON. Manual backup button too.</p></div>
-                <div class="glass card"><h3>08. Works on Any Phone</h3><p>No app store. No install. Open it in Chrome or Safari and it just works.</p></div>
-                <div class="glass card"><h3>09. Custom Units</h3><p>Quintals, dozens, litres, bags, boxes. Your units, your categories.</p></div>
-                <div class="glass card highlight-card"><h3>10. AI Agent <span class="tag-new">NEW</span></h3><p>Ask questions in plain language. "What sold most this week?" The AI answers from your data.</p></div>
+                <div class="glass card spotlight-card reveal"><h3>01. Inventory Management</h3><p>Add, edit, track stock in real time. Low-stock alerts before you run out.</p></div>
+                <div class="glass card spotlight-card reveal"><h3>02. Sales & Billing</h3><p>Create a bill in seconds. Save it, print it, share it. Thermal or A4.</p></div>
+                <div class="glass card spotlight-card reveal"><h3>03. Purchase Tracking</h3><p>Record every supplier purchase. Know your real cost per item and true margin.</p></div>
+                <div class="glass card spotlight-card reveal"><h3>04. Customer Records</h3><p>Full contact history, purchase patterns, outstanding balance. Never lose track.</p></div>
+                <div class="glass card spotlight-card reveal"><h3>05. Reports That Matter</h3><p>Daily sales, monthly summary, stock valuation, profit margins.</p></div>
+                <div class="glass card spotlight-card reveal"><h3>06. Multi-Language</h3><p>Run the whole app in your language. Your staff shouldn't need English.</p></div>
+                <div class="glass card spotlight-card reveal"><h3>07. Auto Backup</h3><p>Data exports automatically to Excel/JSON. Manual backup button too.</p></div>
+                <div class="glass card spotlight-card reveal"><h3>08. Works on Any Phone</h3><p>No app store. No install. Open it in Chrome or Safari and it just works.</p></div>
+                <div class="glass card spotlight-card reveal"><h3>09. Custom Units</h3><p>Quintals, dozens, litres, bags, boxes. Your units, your categories.</p></div>
+                <div class="glass card spotlight-card reveal highlight-card"><h3>10. AI Agent <span class="tag-new">NEW</span></h3><p>Ask questions in plain language. "What sold most this week?" The AI answers from your data.</p></div>
             </div>
         </section>
 
         <!-- TESTIMONIAL -->
-        <section class="section reveal">
-            <div class="glass testimonial-card">
+        <section class="section">
+            <div class="glass testimonial-card spotlight-card reveal">
                 <div class="section-no">30+ HAPPY OWNERS</div>
                 <p class="testi-quote">Pehle stock count karke register karne mein pura din nikal jaata tha. Ab ShopSteward ke saath stock har waqt mere table pe rehta hai — kaunsa product low hai, kya order karna hai, profit mein hoon ya ghate mein — sab kuch pata chalta hai. Mujhe motivation milti hai.</p>
                 <div class="testi-author"><b>Gourgopal Das</b><span>Krishi Bandhu</span></div>
@@ -226,15 +232,15 @@
         </section>
 
         <!-- PRICING -->
-        <section class="section reveal" id="pricing">
-            <div class="section-head">
+        <section class="section" id="pricing">
+            <div class="section-head reveal">
                 <div class="section-no">05 / PRICING</div>
                 <h2>Simple, <em>honest pricing.</em></h2>
             </div>
-            <p class="copy mb-40">Limited-time offer prices. Pay once for setup + first year — no hidden charges. Renew from year 2 at a reduced rate.</p>
+            <p class="copy mb-40 reveal">Limited-time offer prices. Pay once for setup + first year — no hidden charges. Renew from year 2 at a reduced rate.</p>
 
             <div class="pricing-grid">
-                <article class="glass price-card">
+                <article class="glass price-card spotlight-card reveal">
                     <div class="price-tier">TIER_01 // LIMITED OFFER</div>
                     <h3>Essentials, done right.</h3>
                     <div class="price-old">₹4,899</div>
@@ -260,7 +266,7 @@
                     <a class="btn-secondary full-width" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20the%20BASE%20ShopSteward%20plan%20at%20%E2%82%B92%2C999" target="_blank">DEPLOY BASE →</a>
                 </article>
 
-                <article class="glass price-card popular">
+                <article class="glass price-card popular spotlight-card reveal">
                     <div class="popular-badge">MOST POPULAR</div>
                     <div class="price-tier">TIER_02 // CUSTOM</div>
                     <h3>Built around your shop.</h3>
@@ -283,7 +289,7 @@
                     <a class="btn-primary full-width" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20the%20CUSTOM%20ShopSteward%20plan%20at%20%E2%82%B93%2C999" target="_blank">GET CUSTOM →</a>
                 </article>
 
-                <article class="glass price-card">
+                <article class="glass price-card spotlight-card reveal">
                     <div class="price-tier">TIER_03 // AI ADVANCED</div>
                     <h3>Full Custom.</h3>
                     <div class="price-old">₹14,999</div>
@@ -308,37 +314,33 @@
         </section>
 
         <!-- PRODUCTS & ADD-ONS -->
-        <section class="section reveal" id="products">
-            <div class="section-head">
+        <section class="section" id="products">
+            <div class="section-head reveal">
                 <div class="section-no">06 / PRODUCTS & ADD-ONS</div>
                 <h2>Domains & <em>extra services.</em></h2>
             </div>
             
-            <h3 class="sub-heading">🌐 Domains</h3>
+            <h3 class="sub-heading reveal">🌐 Domains</h3>
             <div class="domain-grid">
-                <!-- Domain 1 -->
-                <div class="glass domain-card" onclick="openDomainModal('.in Domain', '₹1,299 setup + ₹999/year')">
+                <div class="glass domain-card spotlight-card reveal" onclick="openDomainModal('.in Domain', '₹1,299 setup + ₹999/year')">
                     <h4>.in Domain</h4>
                     <p>yourshop.in</p>
                     <div class="domain-price">₹1,299 <span>+ ₹999/yr</span></div>
                     <button class="btn-text">View Details →</button>
                 </div>
-                <!-- Domain 2 -->
-                <div class="glass domain-card" onclick="openDomainModal('.com Domain', '₹1,799 setup + ₹1,599/year')">
+                <div class="glass domain-card spotlight-card reveal" onclick="openDomainModal('.com Domain', '₹1,799 setup + ₹1,599/year')">
                     <h4>.com Domain</h4>
                     <p>yourshop.com</p>
                     <div class="domain-price">₹1,799 <span>+ ₹1,599/yr</span></div>
                     <button class="btn-text">View Details →</button>
                 </div>
-                <!-- Domain 3 -->
-                <div class="glass domain-card" onclick="openDomainModal('Subdomain', '₹699 setup + ₹299/year')">
+                <div class="glass domain-card spotlight-card reveal" onclick="openDomainModal('Subdomain', '₹699 setup + ₹299/year')">
                     <h4>Subdomain</h4>
                     <p>yourshop.shopsteward.in</p>
                     <div class="domain-price">₹699 <span>+ ₹299/yr</span></div>
                     <button class="btn-text">View Details →</button>
                 </div>
-                <!-- Domain 4 -->
-                <div class="glass domain-card" onclick="openDomainModal('Custom Domain', 'Variable Pricing (Market Rate + ₹200 fee)')">
+                <div class="glass domain-card spotlight-card reveal" onclick="openDomainModal('Custom Domain', 'Variable Pricing (Market Rate + ₹200 fee)')">
                     <h4>Custom TLD</h4>
                     <p>Any extension</p>
                     <div class="domain-price">Variable</div>
@@ -346,9 +348,9 @@
                 </div>
             </div>
 
-            <h3 class="sub-heading mt-50">✨ Add-on Services</h3>
+            <h3 class="sub-heading mt-50 reveal">✨ Add-on Services</h3>
             <div class="grid-2">
-                <article class="glass card">
+                <article class="glass card spotlight-card reveal">
                     <div class="section-no">ADD-ON 01</div>
                     <h3>WhatsApp Business Integration</h3>
                     <div class="amt-large">₹1,499 <small>one-time</small></div>
@@ -360,7 +362,7 @@
                     </ul>
                     <a class="btn-secondary full-width" href="https://wa.me/918637560557?text=Hi%2C%20I%20want%20the%20WhatsApp%20Business%20add-on%20(%E2%82%B91%2C499)." target="_blank">ADD TO MY PLAN →</a>
                 </article>
-                <article class="glass card">
+                <article class="glass card spotlight-card reveal">
                     <div class="section-no">ADD-ON 02</div>
                     <h3>Data Migration & Setup</h3>
                     <div class="amt-large">₹999 <small>one-time</small></div>
@@ -376,31 +378,31 @@
         </section>
 
         <!-- FAQ -->
-        <section class="section reveal" id="faq">
-            <div class="section-head">
+        <section class="section" id="faq">
+            <div class="section-head reveal">
                 <div class="section-no">07 / FAQ</div>
                 <h2>Questions shop owners <em>ask me.</em></h2>
             </div>
             <div class="faq-list">
-                <div class="glass q"><button>Do I need to buy new hardware or a printer?</button><div class="answer">No. It runs in the browser on the computer or phone you already own. It prints on standard thermal and A4 printers.</div></div>
-                <div class="glass q"><button>Can I use it on my mobile phone?</button><div class="answer">Yes. Open the link in Chrome or Safari. Same data, same features, responsive layout. No app store, no installation.</div></div>
-                <div class="glass q"><button>What is the AI Agent and how does it help me?</button><div class="answer">It's a built-in assistant that understands plain language. Ask it "Which item sold most last month?" and it answers using your own shop data.</div></div>
-                <div class="glass q"><button>What happens to my data if I stop paying?</button><div class="answer">Your data is yours. You can export everything to Excel or JSON at any time, from inside the app. I never hold your business data hostage.</div></div>
-                <div class="glass q"><button>How long does it take to build?</button><div class="answer"><b>Base app: within 72 hours.</b> Every ShopSteward is built from scratch. Customizations depend on what you ask for, and I will give you a clear timeline after our first call.</div></div>
-                <div class="glass q"><button>Why should I choose this over Vyapar or Tally?</button><div class="answer">Those are good products for average needs. If your units, categories, language or workflow don't fit their template, I build around you instead.</div></div>
-                <div class="glass q"><button>Who do I contact if something breaks?</button><div class="answer">Me. Directly. WhatsApp or call. Not a ticket system, not a chatbot. You talk to the person who built your software.</div></div>
+                <div class="glass q reveal"><button>Do I need to buy new hardware or a printer?</button><div class="answer">No. It runs in the browser on the computer or phone you already own. It prints on standard thermal and A4 printers.</div></div>
+                <div class="glass q reveal"><button>Can I use it on my mobile phone?</button><div class="answer">Yes. Open the link in Chrome or Safari. Same data, same features, responsive layout. No app store, no installation.</div></div>
+                <div class="glass q reveal"><button>What is the AI Agent and how does it help me?</button><div class="answer">It's a built-in assistant that understands plain language. Ask it "Which item sold most last month?" and it answers using your own shop data.</div></div>
+                <div class="glass q reveal"><button>What happens to my data if I stop paying?</button><div class="answer">Your data is yours. You can export everything to Excel or JSON at any time, from inside the app. I never hold your business data hostage.</div></div>
+                <div class="glass q reveal"><button>How long does it take to build?</button><div class="answer"><b>Base app: within 72 hours.</b> Every ShopSteward is built from scratch. Customizations depend on what you ask for, and I will give you a clear timeline after our first call.</div></div>
+                <div class="glass q reveal"><button>Why should I choose this over Vyapar or Tally?</button><div class="answer">Those are good products for average needs. If your units, categories, language or workflow don't fit their template, I build around you instead.</div></div>
+                <div class="glass q reveal"><button>Who do I contact if something breaks?</button><div class="answer">Me. Directly. WhatsApp or call. Not a ticket system, not a chatbot. You talk to the person who built your software.</div></div>
             </div>
         </section>
 
         <!-- CONTACT -->
-        <section class="section reveal" id="contact">
+        <section class="section" id="contact">
             <div class="contact-grid">
-                <div>
+                <div class="reveal">
                     <div class="section-no">08 / CONTACT</div>
                     <h2>Let's build <br><span class="serif-text">your steward.</span></h2>
                     <p class="copy mt-20">Tell me what your shop needs. I'll reply within a day — usually much faster.</p>
                 </div>
-                <div class="glass contact-card">
+                <div class="glass contact-card spotlight-card reveal">
                     <a href="https://wa.me/918637560557" target="_blank" class="contact-item"><b>WhatsApp</b><span>+91 86375 60557 ↗</span></a>
                     <a href="mailto:shopsteward.in@gmail.com" class="contact-item"><b>Email</b><span>shopsteward.in@gmail.com</span></a>
                     <a href="https://instagram.com/shopsteward.in" target="_blank" class="contact-item"><b>Instagram</b><span>@shopsteward.in ↗</span></a>
