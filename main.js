@@ -8,38 +8,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. Scroll Reveal Animations (Intersection Observer)
+    // 2. Scroll Reveal Animations
     const revealElements = document.querySelectorAll('.reveal');
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('active');
-                // Optional: stop observing once revealed
+                
+                // CRITICAL FIX: Remove transform after animation so it doesn't trap the card in a CSS stacking context
+                setTimeout(() => {
+                    entry.target.style.transform = 'none';
+                }, 850); 
+
                 revealObserver.unobserve(entry.target); 
             }
         });
-    }, { threshold: 0.15 }); // Triggers when 15% of the element is visible
+    }, { threshold: 0.15 });
 
     revealElements.forEach(el => revealObserver.observe(el));
 
-    // 3. The Spotlight Hover Effect (Blurs background when hovering a card)
-    const spotlightCards = document.querySelectorAll('.spotlight-card');
-    
-    spotlightCards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            document.body.classList.add('spotlight-active');
-            // Raise this specific card above the blur overlay
-            card.style.zIndex = '60'; 
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            document.body.classList.remove('spotlight-active');
-            // Reset z-index
-            card.style.zIndex = ''; 
-        });
-    });
-
-    // 4. Hero Glass Card Submit Animation
+    // 3. Hero Glass Card Submit Animation
     const submitBtn = document.querySelector('.submit-circle');
     const textArea = document.querySelector('.card-input-area textarea');
     if (submitBtn && textArea) {
@@ -56,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Number Spinner Animation (Counter)
+    // 4. Number Spinner Animation
     const spinTargets = document.querySelectorAll('.spin-target');
     const spinObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -64,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const el = entry.target;
                 const target = parseInt(el.dataset.target);
                 let current = 0;
-                const duration = 1500; // ms
+                const duration = 1500;
                 const stepTime = 30;
                 const steps = duration / stepTime;
                 const increment = target / steps;
@@ -85,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.5 });
     spinTargets.forEach(el => spinObserver.observe(el));
     
-    // 6. Copy credentials helper
+    // 5. Copy credentials helper
     window.copyText = async function(id, btn) {
         const text = document.getElementById(id).textContent;
         try {
@@ -99,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
-// 7. Modal Logic (Domains & Legal)
+// 6. Modal Logic
 window.openModal = function(id) {
     const modalId = id === 'terms' ? 'termsModal' : (id === 'privacy' ? 'privacyModal' : 'refundModal');
     const modal = document.getElementById(modalId);
