@@ -8,7 +8,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. Hero Glass Card Submit Animation
+    // 2. Scroll Reveal Animations (Intersection Observer)
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                // Optional: stop observing once revealed
+                revealObserver.unobserve(entry.target); 
+            }
+        });
+    }, { threshold: 0.15 }); // Triggers when 15% of the element is visible
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // 3. The Spotlight Hover Effect (Blurs background when hovering a card)
+    const spotlightCards = document.querySelectorAll('.spotlight-card');
+    
+    spotlightCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            document.body.classList.add('spotlight-active');
+            // Raise this specific card above the blur overlay
+            card.style.zIndex = '60'; 
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            document.body.classList.remove('spotlight-active');
+            // Reset z-index
+            card.style.zIndex = ''; 
+        });
+    });
+
+    // 4. Hero Glass Card Submit Animation
     const submitBtn = document.querySelector('.submit-circle');
     const textArea = document.querySelector('.card-input-area textarea');
     if (submitBtn && textArea) {
@@ -25,24 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Scroll Reveal Animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
-        observer.observe(el);
-    });
-
-    // 4. Number Spinner Animation (Counter)
+    // 5. Number Spinner Animation (Counter)
     const spinTargets = document.querySelectorAll('.spin-target');
     const spinObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -69,10 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }, { threshold: 0.5 });
-
     spinTargets.forEach(el => spinObserver.observe(el));
     
-    // Copy credentials helper
+    // 6. Copy credentials helper
     window.copyText = async function(id, btn) {
         const text = document.getElementById(id).textContent;
         try {
@@ -86,13 +99,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
-// 5. Modal Logic
+// 7. Modal Logic (Domains & Legal)
 window.openModal = function(id) {
     const modalId = id === 'terms' ? 'termsModal' : (id === 'privacy' ? 'privacyModal' : 'refundModal');
     const modal = document.getElementById(modalId);
     if(modal) {
         modal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        document.body.style.overflow = 'hidden';
     }
 }
 
@@ -100,21 +113,18 @@ window.closeModal = function(id) {
     const modal = document.getElementById(id);
     if(modal) {
         modal.classList.remove('active');
-        document.body.style.overflow = ''; // Restore scrolling
+        document.body.style.overflow = '';
     }
 }
 
-// 6. Domain Modal Logic
 window.openDomainModal = function(name, price) {
     const modal = document.getElementById('domainModal');
     document.getElementById('modalDomainName').textContent = name;
     document.getElementById('modalDomainPrice').textContent = price;
     
-    // Generate WhatsApp link dynamically
     const waText = encodeURIComponent(`Hi, I want to order the ${name} for my shop. The price is ${price}. Please assist me with the setup.`);
     document.getElementById('modalWhatsappBtn').href = `https://wa.me/918637560557?text=${waText}`;
     
-    // Generate Email link dynamically
     const mailSubject = encodeURIComponent(`Domain Order: ${name}`);
     const mailBody = encodeURIComponent(`Hi ShopSteward,\n\nI am interested in ordering the ${name} for my shop.\nDetails: ${price}\n\nPlease share the next steps.`);
     modal.querySelector('.btn-secondary').href = `mailto:shopsteward.in@gmail.com?subject=${mailSubject}&body=${mailBody}`;
