@@ -21,22 +21,26 @@
 html { scroll-behavior: smooth; }
 
 body { 
-    /* 1. The deep, green-tinted black base color */
-    background-color: #060908; 
+    /* A deep, rich slate-green base (lighter than pure black) */
+    background-color: #0c1310; 
     
-    /* 2. The Ambient Forest Glows */
+    /* The ambient glows that the glass cards will blur */
     background-image: 
-        radial-gradient(circle at 15% 20%, rgba(123, 178, 142, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 85% 80%, rgba(58, 120, 100, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 60%);
+        /* 1. Top-left: Your bright muddy green */
+        radial-gradient(ellipse at 10% 10%, rgba(123, 178, 142, 0.15) 0%, transparent 45%),
+        /* 2. Bottom-right: A deep emerald/teal for contrast */
+        radial-gradient(ellipse at 90% 90%, rgba(42, 90, 80, 0.25) 0%, transparent 50%),
+        /* 3. Center: A very faint mid-green to tie it together */
+        radial-gradient(ellipse at 50% 50%, rgba(31, 59, 45, 0.1) 0%, transparent 60%);
     
-    /* 3. This keeps the glow fixed in place while you scroll */
+    /* This keeps the glows fixed in place while you scroll */
     background-attachment: fixed; 
     
     color: var(--text-light); 
     font-family: var(--font-sans); 
     overflow-x: hidden; 
     line-height: 1.6; 
+    margin: 0;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -53,11 +57,11 @@ ul { list-style: none; }
 
 /* --- 2. THE GLASSMORPHISM --- */
 .glass {
-    background: rgba(255, 255, 255, 0.04); /* Slightly lower opacity for more transparency */
-    backdrop-filter: blur(24px); /* Increased blur */
+    background: rgba(255, 255, 255, 0.03); /* Slightly more transparent */
+    backdrop-filter: blur(24px); /* Higher blur */
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.12); /* Brighter border */
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6); /* Deeper shadow */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Brighter border to catch the light */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); 
     border-radius: 24px;
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, filter 0.4s ease, opacity 0.4s ease;
 }
@@ -103,8 +107,8 @@ ul { list-style: none; }
     left: 0; 
     width: 100%; 
     height: 100%; 
-    /* Changed #0a0a0a to #060908 to match the body */
-    background: linear-gradient(90deg, #060908 0%, rgba(6,9,8,0.95) 30%, rgba(6,9,8,0.4) 70%, transparent 100%); 
+    /* Fades into #0c1310 instead of pure black */
+    background: linear-gradient(90deg, #0c1310 0%, rgba(12, 19, 16, 0.95) 30%, rgba(12, 19, 16, 0.4) 70%, transparent 100%); 
 }
 .hero-content { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1400px; margin: 0 auto; gap: 50px; }
 .hero-text { max-width: 600px; }
