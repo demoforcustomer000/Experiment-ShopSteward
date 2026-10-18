@@ -19,7 +19,34 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { background-color: var(--bg-dark); color: var(--text-light); font-family: var(--font-sans); overflow-x: hidden; line-height: 1.6; }
+body {
+    /* A very deep, slightly green-tinted black */
+    background-color: #060908; 
+    color: var(--text-light);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    line-height: 1.6;
+    position: relative;
+}
+
+/* The Ambient Glow Effect */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    background: 
+        /* Top left: Your muddy green glow */
+        radial-gradient(circle at 15% 20%, rgba(123, 178, 142, 0.08) 0%, transparent 40%),
+        /* Bottom right: A deep teal/cyan glow for contrast */
+        radial-gradient(circle at 85% 80%, rgba(58, 120, 100, 0.08) 0%, transparent 40%),
+        /* Center: A very faint warm glow to prevent it from feeling too cold */
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 60%);
+}
 a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
 
@@ -34,11 +61,11 @@ ul { list-style: none; }
 
 /* --- 2. THE GLASSMORPHISM --- */
 .glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.04); /* Slightly lower opacity for more transparency */
+    backdrop-filter: blur(24px); /* Increased blur */
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.12); /* Brighter border */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6); /* Deeper shadow */
     border-radius: 24px;
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, filter 0.4s ease, opacity 0.4s ease;
 }
