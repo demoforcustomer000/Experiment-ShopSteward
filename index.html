@@ -479,19 +479,14 @@
     </div>
 
     <script src="main.js"></script>
-    <!-- AI Bot HTML (Add before </body>) -->
-<div id="panel">
-  <div id="messages">
-    <div class="msg bot">Namaste! I am your ShopSteward AI. Ask me about your sales, customers, or stock.</div>
-  </div>
-  <div id="typing-indicator"><span></span><span></span><span></span></div>
-  <div id="inputRow">
-    <input id="q" placeholder="Ask something..." autocomplete="off">
-    <button id="send" type="button" onclick="kbSend(event)">Send</button>
-  </div>
-</div>
-
+   <!-- AI Guide Bot (Add before </body>) -->
 <div id="bot-wrapper">
+  <!-- Speech Bubble -->
+  <div id="ai-speech" class="ai-speech">
+    <span id="ai-text">Welcome to ShopSteward! Hover over a section to learn more.</span>
+  </div>
+
+  <!-- The Bot -->
   <div id="bot-shadow"></div>
   <div id="bot">
     <div id="eyes-wrap">
@@ -502,6 +497,6 @@
     <div class="particle p2"></div>
     <div class="particle p3"></div>
   </div>
-</div>
+</div> 
 </body>
 </html>
