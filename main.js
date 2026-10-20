@@ -148,385 +148,95 @@ window.addEventListener('click', (e) => {
         document.body.style.overflow = '';
     }
 });
-// ================= AI GUIDE BOT LOGIC =================
-document.addEventListener('DOMContentLoaded', () => {
-  const aiBot = document.getElementById('ai-guide-bot');
-  const aiChatText = document.getElementById('aiChatText');
 
-  // Debugging check
-  if (!aiBot) {
-    console.error("AI Bot HTML not found! Make sure the HTML block is in index.html");
-    return;
-  }
 
-  // Check if user already dismissed it
-  if (!localStorage.getItem('shopsteward_ai_dismissed')) {
-    
-    // 1. Show the chat bubble after 2 seconds
-    setTimeout(() => {
-      aiBot.classList.add('show-chat');
-      console.log("AI Bot activated and chat shown.");
-    }, 2000);
 
-    // 2. Define the scroll zones (Make sure your HTML has these IDs!)
-    const zones = [
-      { 
-        id: 'top', 
-        message: 'Welcome to ShopSteward! Scroll down to see how we can help your shop.', 
-        bottom: '100px', 
-        right: '30px', 
-        handClass: '' 
-      },
-      { 
-        id: 'features', 
-        message: 'Generic software doesn\'t fit your shop. We build it around YOUR rules.', 
-        bottom: '200px', 
-        left: '30px', 
-        right: 'auto', 
-        handClass: 'point-right' 
-      },
-      { 
-        id: 'demo', 
-        message: 'Try the actual app! No install required. Just click to open.', 
-        bottom: '150px', 
-        left: 'auto', 
-        right: '30px', 
-        handClass: 'point-left' 
-      },
-      { 
-        id: 'pricing', 
-        message: 'Simple, honest pricing. No hidden charges. Pick a plan that fits.', 
-        bottom: '100px', 
-        left: '30px', 
-        right: 'auto', 
-        handClass: 'point-right' 
-      },
-      { 
-        id: 'contact', 
-        message: 'Ready to start? Message me directly on WhatsApp. I reply fast!', 
-        bottom: '150px', 
-        left: 'auto', 
-        right: '30px', 
-        handClass: 'point-down' 
-      }
-    ];
 
-    let currentZone = '';
-
-    // 3. Setup the Intersection Observer
-    const observerOptions = { threshold: 0.3 };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Find which zone matches the section currently on screen
-          const zone = zones.find(z => z.id === entry.target.id || (z.id === 'top' && entry.target.tagName === 'SECTION' && !entry.target.id));
-          
-          if (zone && currentZone !== zone.id) {
-            currentZone = zone.id;
-            
-            // Update Text
-            aiChatText.textContent = zone.message;
-            
-            // Move Bot
-            aiBot.style.bottom = zone.bottom;
-            aiBot.style.left = zone.left || 'auto';
-            aiBot.style.right = zone.right || 'auto';
-            
-            // Update Hand Direction
-            aiBot.className = 'ai-guide-bot show-chat ' + zone.handClass;
-            
-            console.log("Bot moved to zone:", zone.id);
-          }
-        }
-      });
-    }, observerOptions);
-
-    // 4. Observe sections (Make sure these IDs exist in your index.html)
-    document.querySelectorAll('section, .nipe-strip, .steward-block').forEach(el => {
-      observer.observe(el);
-    });
-
-  } else {
-    // Hide the bot entirely if already dismissed in past
-    aiBot.style.display = 'none';
-  }
-});
-
-// 5. Dismiss Function (Attached to window so the inline onclick works)
-window.dismissAIBot = function() {
-  const aiBot = document.getElementById('ai-guide-bot');
-  if (aiBot) {
-    aiBot.style.display = 'none';
-    localStorage.setItem('shopsteward_ai_dismissed', 'true');
-  }
-}
 document.addEventListener('DOMContentLoaded', function() {
   var botWrapper = document.getElementById('bot-wrapper');
   var bot = document.getElementById('bot');
-  var panel = document.getElementById('panel');
-  var messages = document.getElementById('messages');
-  var typingIndicator = document.getElementById('typing-indicator');
-  var q = document.getElementById('q');
+  var speechBubble = document.getElementById('ai-speech');
+  var aiText = document.getElementById('ai-text');
 
   if (!botWrapper) return; 
 
-  // --- DRAG + TAP DETECTION ---
-  var isDragging = false;
-  var dragStartX = 0, dragStartY = 0;
-  var startLeft = 0, startTop = 0;
-  var hasMoved = false;
-  var DRAG_THRESHOLD = 8;
-
-  (function initPosition() {
-    var saved = null;
-    try { saved = JSON.parse(localStorage.getItem('kb_bot_pos')); } catch(e) {}
-    if (saved && typeof saved.left === 'number' && typeof saved.top === 'number') {
-      var maxL = window.innerWidth - 70;
-      var maxT = window.innerHeight - 70;
-      botWrapper.style.left = Math.max(0, Math.min(maxL, saved.left)) + 'px';
-      botWrapper.style.top = Math.max(0, Math.min(maxT, saved.top)) + 'px';
-      botWrapper.style.right = 'auto';
-      botWrapper.style.bottom = 'auto';
-    } else {
-      botWrapper.style.left = '30px';
-      botWrapper.style.bottom = '30px';
-      botWrapper.style.right = 'auto';
-      botWrapper.style.top = 'auto';
-    }
-  })();
-
-  function getPoint(e) {
-    if (e.touches && e.touches.length) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    if (e.changedTouches && e.changedTouches.length) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
-    return { x: e.clientX, y: e.clientY };
-  }
-
-  function onDragStart(e) {
-    if (isDragging || panel.contains(e.target)) return;
-    var p = getPoint(e);
-    dragStartX = p.x; dragStartY = p.y;
-    var rect = botWrapper.getBoundingClientRect();
-    startLeft = rect.left; startTop = rect.top;
-    isDragging = true; hasMoved = false;
-
-    document.addEventListener('pointermove', onDragMove, { passive: false });
-    document.addEventListener('pointerup', onDragEnd);
-    document.addEventListener('touchmove', onDragMove, { passive: false });
-    document.addEventListener('touchend', onDragEnd);
-    document.addEventListener('mousemove', onDragMove);
-    document.addEventListener('mouseup', onDragEnd);
-  }
-
-  function onDragMove(e) {
-    if (!isDragging) return;
-    var p = getPoint(e);
-    var dx = p.x - dragStartX;
-    var dy = p.y - dragStartY;
-
-    if (!hasMoved && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) {
-      hasMoved = true;
-      botWrapper.classList.add('dragging');
-    }
-    if (!hasMoved) return;
-    if (e.cancelable) e.preventDefault();
-
-    var newLeft = startLeft + dx;
-    var newTop = startTop + dy;
-    var maxL = window.innerWidth - 70;
-    var maxT = window.innerHeight - 70;
-
-    botWrapper.style.left = Math.max(0, Math.min(maxL, newLeft)) + 'px';
-    botWrapper.style.top = Math.max(0, Math.min(maxT, newTop)) + 'px';
-    botWrapper.style.right = 'auto';
-    botWrapper.style.bottom = 'auto';
-
-    if (panel.classList.contains('open')) positionPanel();
-  }
-
-  function onDragEnd(e) {
-    if (!isDragging) return;
-    isDragging = false;
-    botWrapper.classList.remove('dragging');
-
-    document.removeEventListener('pointermove', onDragMove);
-    document.removeEventListener('pointerup', onDragEnd);
-    document.removeEventListener('touchmove', onDragMove);
-    document.removeEventListener('touchend', onDragEnd);
-    document.removeEventListener('mousemove', onDragMove);
-    document.removeEventListener('mouseup', onDragEnd);
-
-    if (hasMoved) {
-      var rect = botWrapper.getBoundingClientRect();
-      try { localStorage.setItem('kb_bot_pos', JSON.stringify({ left: rect.left, top: rect.top })); } catch(err) {}
-    } else {
-      kbToggle();
-    }
-    hasMoved = false;
-  }
-
-  botWrapper.addEventListener('pointerdown', onDragStart);
-  botWrapper.addEventListener('touchstart', onDragStart, { passive: true });
-  botWrapper.addEventListener('mousedown', onDragStart);
-
-  // --- PANEL POSITIONING ---
-  function positionPanel() {
-    var rect = botWrapper.getBoundingClientRect();
-    var panelW = 320;
-    var panelH = Math.min(400, window.innerHeight * 0.6);
-    var margin = 20;
-
-    var panelLeft = rect.left + 35;
-    var panelTop = rect.top - panelH - margin;
-
-    if (panelTop < margin) panelTop = rect.bottom + margin;
-    if (panelLeft + panelW > window.innerWidth - margin) panelLeft = window.innerWidth - panelW - margin;
-    if (panelTop + panelH > window.innerHeight - margin) panelTop = window.innerHeight - panelH - margin;
-    if (panelLeft < margin) panelLeft = margin;
-
-    panel.style.left = panelLeft + 'px';
-    panel.style.top = panelTop + 'px';
-    panel.style.right = 'auto';
-    panel.style.bottom = 'auto';
-
-    var originX = (rect.left + 35) - panelLeft;
-    var originY = (rect.top + 35) - panelTop;
-    panel.style.transformOrigin = originX + 'px ' + originY + 'px';
-  }
-
-  window.addEventListener('resize', function() {
-    if (panel.classList.contains('open')) positionPanel();
-  });
-
-  // --- EMOTION CONTROLLER ---
-  var emotionTimer = null;
-  function setEmotion(name, duration) {
-    if (duration === undefined) duration = 0;
-    bot.className = '';
-    if (name) bot.classList.add(name);
-    if (emotionTimer) clearTimeout(emotionTimer);
-    if (duration > 0) {
-      emotionTimer = setTimeout(function() { bot.classList.remove(name); idleLoop(); }, duration);
-    }
-  }
-
-  var idleTimer;
-  function idleLoop() {
-    clearTimeout(idleTimer);
-    var wait = 2000 + Math.random() * 4000;
-    idleTimer = setTimeout(function() {
-      if (Math.random() < 0.5) blink();
-      idleLoop();
-    }, wait);
-  }
-
-  function blink() {
-    if (bot.classList.contains('thinking') || bot.classList.contains('searching') || bot.classList.contains('happy')) return;
-    setEmotion('blink', 150);
-  }
-
-  setInterval(function() {
-    if (!bot.classList.contains('thinking') && !bot.classList.contains('searching') && !bot.classList.contains('blink')) blink();
-  }, 3500);
-
-  idleLoop();
-
-  // --- EMOTION DETECTION ---
-  function detectEmotion(text) {
-    var t = text.toLowerCase();
-    if (/\b(due|dues|unpaid|pending|overdue|owe|owed|debt|late|remaining|left|baki|bakaya|udhaar)\b/.test(t)) return { during: 'searching', after: 'sad' };
-    if (/\b(hi|hello|hey|namaste|greetings|morning|evening)\b/.test(t)) return { during: 'listening', after: 'happy' };
-    if (/\b(problem|error|issue|broken|wrong|fail|not working|stuck)\b/.test(t)) return { during: 'thinking', after: 'confused' };
-    if (/\b(find|search|show|list|where|which|who|look up|display|tell me|dekhao|koto|kitna)\b/.test(t)) return { during: 'searching', after: 'happy' };
-    if (/\b(sale|sales|sold|sell|profit|revenue|earned|income|money|cash|today|aaj|becha)\b/.test(t)) return { during: 'thinking', after: 'happy' };
-    return { during: 'thinking', after: 'happy' };
-  }
-
-  // --- BOUNCE & TOGGLE ---
-  function triggerBounce() {
-    botWrapper.classList.remove('bounce');
-    void botWrapper.offsetWidth;
-    botWrapper.classList.add('bounce');
-    setTimeout(function() { botWrapper.classList.remove('bounce'); }, 750);
-  }
-
-  function kbToggle() {
-    var isOpening = !panel.classList.contains('open');
-    if (isOpening) positionPanel();
-    panel.classList.toggle('open');
-    triggerBounce();
-    if (isOpening) { setEmotion('listening', 800); }
-  }
-
-  // --- THINKING ANIMATION ---
-  var thinkInterval = null;
-  function startThinking(mode) {
-    clearInterval(thinkInterval);
-    if (mode === 'searching') {
-      setEmotion('searching');
-      thinkInterval = setInterval(function() { bot.classList.toggle('searching'); }, 500);
-    } else if (mode === 'listening') {
-      setEmotion('listening');
-    } else {
-      setEmotion('thinking');
-      thinkInterval = setInterval(function() { bot.classList.toggle('searching'); }, 700);
-    }
-  }
-  function stopThinking() {
-    clearInterval(thinkInterval);
-    bot.classList.remove('thinking', 'searching', 'listening');
-  }
-
-  function addMsg(text, type) {
-    var d = document.createElement('div');
-    d.className = 'msg ' + type;
-    d.textContent = text;
-    messages.appendChild(d);
-    messages.scrollTop = messages.scrollHeight;
-  }
-
-  // --- SIMULATED AI RESPONSE (No Supabase) ---
-  var isSending = false;
-  window.kbSend = function(e) {
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    if (isSending) return;
-    isSending = true;
-    setTimeout(function() { isSending = false; }, 500);
-
-    var text = q.value.trim();
-    if (!text) return;
-
-    addMsg(text, 'user');
-    q.value = '';
-
-    var emotion = detectEmotion(text);
-    typingIndicator.style.display = 'flex';
-    startThinking(emotion.during);
-
-    // Simulate network delay
-    setTimeout(function() {
-      typingIndicator.style.display = 'none';
-      stopThinking();
-      setEmotion(emotion.after, 1800);
-      
-      // The mock response
-      var mockResponse = "This is a demo response. To get real AI answers about your shop data, you need to connect the backend database.";
-      
-      // Add dynamic flavor based on the user's question
-      if (emotion.after === 'sad') {
-        mockResponse = "I see you are asking about pending dues. In the live version, I would pull exactly who owes you money from your database.";
-      } else if (emotion.after === 'happy' && text.toLowerCase().includes('sale')) {
-        mockResponse = "Your sales data looks great! In the live version, I would calculate your exact profit margins here.";
-      }
-
-      addMsg(mockResponse, 'bot');
-      
-      setEmotion('speaking', 900);
-      setTimeout(idleLoop, 1000);
-    }, 1500); // 1.5 second fake delay
+  // --- DATA: What the bot says for each section ---
+  // Make sure your HTML sections have these exact IDs (e.g., <section id="features">)
+  var explanations = {
+    'features': "We build custom features for YOUR shop. No more fighting with generic software!",
+    'demo': "Try the actual app! No install required. Click to open the live demo.",
+    'pricing': "Simple, honest pricing. Pay once for setup, renew at a low rate.",
+    'products': "Need a custom domain or WhatsApp integration? We offer those too!",
+    'faq': "Have questions? Read the answers here or message me directly.",
+    'contact': "Ready to start? Tap here to message me on WhatsApp!"
   };
 
-  q.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') { e.preventDefault(); window.kbSend(e); }
+  var defaultText = "Welcome to ShopSteward! Hover over a section to learn more.";
+
+  function showSpeech(text) {
+    if (aiText.textContent === text) return; // Don't re-animate if text is the same
+    
+    aiText.textContent = text;
+    speechBubble.classList.add('show');
+    
+    // Change bot expression temporarily
+    bot.className = 'thinking';
+    setTimeout(function() { bot.className = 'happy'; }, 600);
+    setTimeout(function() { bot.className = ''; }, 2500);
+  }
+
+  // --- HOVER LOGIC (For Desktop) ---
+  // If the user hovers over a section, show its explanation
+  document.querySelectorAll('section[id]').forEach(function(sec) {
+    sec.addEventListener('mouseenter', function() {
+      var id = this.getAttribute('id');
+      if (explanations[id]) {
+        showSpeech(explanations[id]);
+      }
+    });
+    
+    sec.addEventListener('mouseleave', function() {
+      // Optional: reset to default when they leave the section
+      // showSpeech(defaultText); 
+    });
   });
+
+  // --- SCROLL LOGIC (For Mobile / Touch) ---
+  // On mobile, there is no hover, so we detect which section is in view
+  var observerOptions = { threshold: 0.5 }; // Triggers when 50% of the section is visible
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.getAttribute('id');
+        if (explanations[id]) {
+          showSpeech(explanations[id]);
+        }
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('section[id]').forEach(function(sec) {
+    observer.observe(sec);
+  });
+
+  // --- IDLE BLINKING ANIMATION ---
+  setInterval(function() {
+    if (!bot.classList.contains('thinking') && !bot.classList.contains('happy')) {
+      bot.classList.add('blink');
+      setTimeout(function() { bot.classList.remove('blink'); }, 150);
+    }
+  }, 3500);
+
+  // Show welcome message after 2 seconds
+  setTimeout(function() {
+    showSpeech(defaultText);
+  }, 2000);
+  
+  // Hide the bubble after 7 seconds if they haven't hovered anything yet
+  setTimeout(function() {
+    if (aiText.textContent === defaultText) {
+      speechBubble.classList.remove('show');
+    }
+  }, 9000);
 });
