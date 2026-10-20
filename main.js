@@ -149,100 +149,115 @@ window.addEventListener('click', (e) => {
     }
 });
 // ================= AI GUIDE BOT LOGIC =================
-const aiBot = document.getElementById('ai-guide-bot');
-const aiChatText = document.getElementById('aiChatText');
+document.addEventListener('DOMContentLoaded', () => {
+  const aiBot = document.getElementById('ai-guide-bot');
+  const aiChatText = document.getElementById('aiChatText');
 
-// Check if user already dismissed it
-if (!localStorage.getItem('shopsteward_ai_dismissed')) {
-  
-  // Show the bot after 2 seconds
-  setTimeout(() => {
-    aiBot.classList.add('show-chat');
-  }, 2000);
+  // Debugging check
+  if (!aiBot) {
+    console.error("AI Bot HTML not found! Make sure the HTML block is in index.html");
+    return;
+  }
 
-  // Define the scroll zones
-  const zones = [
-    { 
-      id: 'top', 
-      message: 'Welcome to ShopSteward! Scroll down to see how we can help your shop.', 
-      bottom: '100px', 
-      right: '30px', 
-      handClass: '' 
-    },
-    { 
-      id: 'features', 
-      message: 'Generic software doesn\'t fit your shop. We build it around YOUR rules.', 
-      bottom: '200px', 
-      left: '30px', 
-      right: 'auto', 
-      handClass: 'point-right' 
-    },
-    { 
-      id: 'demo', 
-      message: 'Try the actual app! No install required. Just click to open.', 
-      bottom: '150px', 
-      left: 'auto', 
-      right: '30px', 
-      handClass: 'point-left' 
-    },
-    { 
-      id: 'pricing', 
-      message: 'Simple, honest pricing. No hidden charges. Pick a plan that fits.', 
-      bottom: '100px', 
-      left: '30px', 
-      right: 'auto', 
-      handClass: 'point-right' 
-    },
-    { 
-      id: 'contact', 
-      message: 'Ready to start? Message me directly on WhatsApp. I reply fast!', 
-      bottom: '150px', 
-      left: 'auto', 
-      right: '30px', 
-      handClass: 'point-down' 
-    }
-  ];
+  // Check if user already dismissed it
+  if (!localStorage.getItem('shopsteward_ai_dismissed')) {
+    
+    // 1. Show the chat bubble after 2 seconds
+    setTimeout(() => {
+      aiBot.classList.add('show-chat');
+      console.log("AI Bot activated and chat shown.");
+    }, 2000);
 
-  let currentZone = '';
-
-  // Use IntersectionObserver to detect scrolling into sections
-  const observerOptions = { threshold: 0.3 };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const zone = zones.find(z => z.id === entry.target.id || (z.id === 'top' && entry.target.tagName === 'SECTION' && !entry.target.id));
-        
-        if (zone && currentZone !== zone.id) {
-          currentZone = zone.id;
-          
-          // Update Text
-          aiChatText.textContent = zone.message;
-          
-          // Move Bot
-          aiBot.style.bottom = zone.bottom;
-          aiBot.style.left = zone.left;
-          aiBot.style.right = zone.right;
-          
-          // Update Hand Direction
-          aiBot.className = 'ai-guide-bot show-chat ' + zone.handClass;
-        }
+    // 2. Define the scroll zones (Make sure your HTML has these IDs!)
+    const zones = [
+      { 
+        id: 'top', 
+        message: 'Welcome to ShopSteward! Scroll down to see how we can help your shop.', 
+        bottom: '100px', 
+        right: '30px', 
+        handClass: '' 
+      },
+      { 
+        id: 'features', 
+        message: 'Generic software doesn\'t fit your shop. We build it around YOUR rules.', 
+        bottom: '200px', 
+        left: '30px', 
+        right: 'auto', 
+        handClass: 'point-right' 
+      },
+      { 
+        id: 'demo', 
+        message: 'Try the actual app! No install required. Just click to open.', 
+        bottom: '150px', 
+        left: 'auto', 
+        right: '30px', 
+        handClass: 'point-left' 
+      },
+      { 
+        id: 'pricing', 
+        message: 'Simple, honest pricing. No hidden charges. Pick a plan that fits.', 
+        bottom: '100px', 
+        left: '30px', 
+        right: 'auto', 
+        handClass: 'point-right' 
+      },
+      { 
+        id: 'contact', 
+        message: 'Ready to start? Message me directly on WhatsApp. I reply fast!', 
+        bottom: '150px', 
+        left: 'auto', 
+        right: '30px', 
+        handClass: 'point-down' 
       }
+    ];
+
+    let currentZone = '';
+
+    // 3. Setup the Intersection Observer
+    const observerOptions = { threshold: 0.3 };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Find which zone matches the section currently on screen
+          const zone = zones.find(z => z.id === entry.target.id || (z.id === 'top' && entry.target.tagName === 'SECTION' && !entry.target.id));
+          
+          if (zone && currentZone !== zone.id) {
+            currentZone = zone.id;
+            
+            // Update Text
+            aiChatText.textContent = zone.message;
+            
+            // Move Bot
+            aiBot.style.bottom = zone.bottom;
+            aiBot.style.left = zone.left || 'auto';
+            aiBot.style.right = zone.right || 'auto';
+            
+            // Update Hand Direction
+            aiBot.className = 'ai-guide-bot show-chat ' + zone.handClass;
+            
+            console.log("Bot moved to zone:", zone.id);
+          }
+        }
+      });
+    }, observerOptions);
+
+    // 4. Observe sections (Make sure these IDs exist in your index.html)
+    document.querySelectorAll('section, .nipe-strip, .steward-block').forEach(el => {
+      observer.observe(el);
     });
-  }, observerOptions);
 
-  // Observe all sections
-  document.querySelectorAll('section, .nipe-strip, .steward-block').forEach(el => {
-    observer.observe(el);
-  });
+  } else {
+    // Hide the bot entirely if already dismissed in past
+    aiBot.style.display = 'none';
+  }
+});
 
-} else {
-  // Hide the bot entirely if already dismissed
-  aiBot.style.display = 'none';
-}
-
-// Dismiss Function (Must be attached to window so the inline HTML onclick can find it)
+// 5. Dismiss Function (Attached to window so the inline onclick works)
 window.dismissAIBot = function() {
-  aiBot.style.display = 'none';
-  localStorage.setItem('shopsteward_ai_dismissed', 'true');
+  const aiBot = document.getElementById('ai-guide-bot');
+  if (aiBot) {
+    aiBot.style.display = 'none';
+    localStorage.setItem('shopsteward_ai_dismissed', 'true');
+  }
 }
