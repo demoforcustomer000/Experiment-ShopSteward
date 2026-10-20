@@ -261,3 +261,272 @@ window.dismissAIBot = function() {
     localStorage.setItem('shopsteward_ai_dismissed', 'true');
   }
 }
+document.addEventListener('DOMContentLoaded', function() {
+  var botWrapper = document.getElementById('bot-wrapper');
+  var bot = document.getElementById('bot');
+  var panel = document.getElementById('panel');
+  var messages = document.getElementById('messages');
+  var typingIndicator = document.getElementById('typing-indicator');
+  var q = document.getElementById('q');
+
+  if (!botWrapper) return; 
+
+  // --- DRAG + TAP DETECTION ---
+  var isDragging = false;
+  var dragStartX = 0, dragStartY = 0;
+  var startLeft = 0, startTop = 0;
+  var hasMoved = false;
+  var DRAG_THRESHOLD = 8;
+
+  (function initPosition() {
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem('kb_bot_pos')); } catch(e) {}
+    if (saved && typeof saved.left === 'number' && typeof saved.top === 'number') {
+      var maxL = window.innerWidth - 70;
+      var maxT = window.innerHeight - 70;
+      botWrapper.style.left = Math.max(0, Math.min(maxL, saved.left)) + 'px';
+      botWrapper.style.top = Math.max(0, Math.min(maxT, saved.top)) + 'px';
+      botWrapper.style.right = 'auto';
+      botWrapper.style.bottom = 'auto';
+    } else {
+      botWrapper.style.left = '30px';
+      botWrapper.style.bottom = '30px';
+      botWrapper.style.right = 'auto';
+      botWrapper.style.top = 'auto';
+    }
+  })();
+
+  function getPoint(e) {
+    if (e.touches && e.touches.length) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    if (e.changedTouches && e.changedTouches.length) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+    return { x: e.clientX, y: e.clientY };
+  }
+
+  function onDragStart(e) {
+    if (isDragging || panel.contains(e.target)) return;
+    var p = getPoint(e);
+    dragStartX = p.x; dragStartY = p.y;
+    var rect = botWrapper.getBoundingClientRect();
+    startLeft = rect.left; startTop = rect.top;
+    isDragging = true; hasMoved = false;
+
+    document.addEventListener('pointermove', onDragMove, { passive: false });
+    document.addEventListener('pointerup', onDragEnd);
+    document.addEventListener('touchmove', onDragMove, { passive: false });
+    document.addEventListener('touchend', onDragEnd);
+    document.addEventListener('mousemove', onDragMove);
+    document.addEventListener('mouseup', onDragEnd);
+  }
+
+  function onDragMove(e) {
+    if (!isDragging) return;
+    var p = getPoint(e);
+    var dx = p.x - dragStartX;
+    var dy = p.y - dragStartY;
+
+    if (!hasMoved && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) {
+      hasMoved = true;
+      botWrapper.classList.add('dragging');
+    }
+    if (!hasMoved) return;
+    if (e.cancelable) e.preventDefault();
+
+    var newLeft = startLeft + dx;
+    var newTop = startTop + dy;
+    var maxL = window.innerWidth - 70;
+    var maxT = window.innerHeight - 70;
+
+    botWrapper.style.left = Math.max(0, Math.min(maxL, newLeft)) + 'px';
+    botWrapper.style.top = Math.max(0, Math.min(maxT, newTop)) + 'px';
+    botWrapper.style.right = 'auto';
+    botWrapper.style.bottom = 'auto';
+
+    if (panel.classList.contains('open')) positionPanel();
+  }
+
+  function onDragEnd(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    botWrapper.classList.remove('dragging');
+
+    document.removeEventListener('pointermove', onDragMove);
+    document.removeEventListener('pointerup', onDragEnd);
+    document.removeEventListener('touchmove', onDragMove);
+    document.removeEventListener('touchend', onDragEnd);
+    document.removeEventListener('mousemove', onDragMove);
+    document.removeEventListener('mouseup', onDragEnd);
+
+    if (hasMoved) {
+      var rect = botWrapper.getBoundingClientRect();
+      try { localStorage.setItem('kb_bot_pos', JSON.stringify({ left: rect.left, top: rect.top })); } catch(err) {}
+    } else {
+      kbToggle();
+    }
+    hasMoved = false;
+  }
+
+  botWrapper.addEventListener('pointerdown', onDragStart);
+  botWrapper.addEventListener('touchstart', onDragStart, { passive: true });
+  botWrapper.addEventListener('mousedown', onDragStart);
+
+  // --- PANEL POSITIONING ---
+  function positionPanel() {
+    var rect = botWrapper.getBoundingClientRect();
+    var panelW = 320;
+    var panelH = Math.min(400, window.innerHeight * 0.6);
+    var margin = 20;
+
+    var panelLeft = rect.left + 35;
+    var panelTop = rect.top - panelH - margin;
+
+    if (panelTop < margin) panelTop = rect.bottom + margin;
+    if (panelLeft + panelW > window.innerWidth - margin) panelLeft = window.innerWidth - panelW - margin;
+    if (panelTop + panelH > window.innerHeight - margin) panelTop = window.innerHeight - panelH - margin;
+    if (panelLeft < margin) panelLeft = margin;
+
+    panel.style.left = panelLeft + 'px';
+    panel.style.top = panelTop + 'px';
+    panel.style.right = 'auto';
+    panel.style.bottom = 'auto';
+
+    var originX = (rect.left + 35) - panelLeft;
+    var originY = (rect.top + 35) - panelTop;
+    panel.style.transformOrigin = originX + 'px ' + originY + 'px';
+  }
+
+  window.addEventListener('resize', function() {
+    if (panel.classList.contains('open')) positionPanel();
+  });
+
+  // --- EMOTION CONTROLLER ---
+  var emotionTimer = null;
+  function setEmotion(name, duration) {
+    if (duration === undefined) duration = 0;
+    bot.className = '';
+    if (name) bot.classList.add(name);
+    if (emotionTimer) clearTimeout(emotionTimer);
+    if (duration > 0) {
+      emotionTimer = setTimeout(function() { bot.classList.remove(name); idleLoop(); }, duration);
+    }
+  }
+
+  var idleTimer;
+  function idleLoop() {
+    clearTimeout(idleTimer);
+    var wait = 2000 + Math.random() * 4000;
+    idleTimer = setTimeout(function() {
+      if (Math.random() < 0.5) blink();
+      idleLoop();
+    }, wait);
+  }
+
+  function blink() {
+    if (bot.classList.contains('thinking') || bot.classList.contains('searching') || bot.classList.contains('happy')) return;
+    setEmotion('blink', 150);
+  }
+
+  setInterval(function() {
+    if (!bot.classList.contains('thinking') && !bot.classList.contains('searching') && !bot.classList.contains('blink')) blink();
+  }, 3500);
+
+  idleLoop();
+
+  // --- EMOTION DETECTION ---
+  function detectEmotion(text) {
+    var t = text.toLowerCase();
+    if (/\b(due|dues|unpaid|pending|overdue|owe|owed|debt|late|remaining|left|baki|bakaya|udhaar)\b/.test(t)) return { during: 'searching', after: 'sad' };
+    if (/\b(hi|hello|hey|namaste|greetings|morning|evening)\b/.test(t)) return { during: 'listening', after: 'happy' };
+    if (/\b(problem|error|issue|broken|wrong|fail|not working|stuck)\b/.test(t)) return { during: 'thinking', after: 'confused' };
+    if (/\b(find|search|show|list|where|which|who|look up|display|tell me|dekhao|koto|kitna)\b/.test(t)) return { during: 'searching', after: 'happy' };
+    if (/\b(sale|sales|sold|sell|profit|revenue|earned|income|money|cash|today|aaj|becha)\b/.test(t)) return { during: 'thinking', after: 'happy' };
+    return { during: 'thinking', after: 'happy' };
+  }
+
+  // --- BOUNCE & TOGGLE ---
+  function triggerBounce() {
+    botWrapper.classList.remove('bounce');
+    void botWrapper.offsetWidth;
+    botWrapper.classList.add('bounce');
+    setTimeout(function() { botWrapper.classList.remove('bounce'); }, 750);
+  }
+
+  function kbToggle() {
+    var isOpening = !panel.classList.contains('open');
+    if (isOpening) positionPanel();
+    panel.classList.toggle('open');
+    triggerBounce();
+    if (isOpening) { setEmotion('listening', 800); }
+  }
+
+  // --- THINKING ANIMATION ---
+  var thinkInterval = null;
+  function startThinking(mode) {
+    clearInterval(thinkInterval);
+    if (mode === 'searching') {
+      setEmotion('searching');
+      thinkInterval = setInterval(function() { bot.classList.toggle('searching'); }, 500);
+    } else if (mode === 'listening') {
+      setEmotion('listening');
+    } else {
+      setEmotion('thinking');
+      thinkInterval = setInterval(function() { bot.classList.toggle('searching'); }, 700);
+    }
+  }
+  function stopThinking() {
+    clearInterval(thinkInterval);
+    bot.classList.remove('thinking', 'searching', 'listening');
+  }
+
+  function addMsg(text, type) {
+    var d = document.createElement('div');
+    d.className = 'msg ' + type;
+    d.textContent = text;
+    messages.appendChild(d);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  // --- SIMULATED AI RESPONSE (No Supabase) ---
+  var isSending = false;
+  window.kbSend = function(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (isSending) return;
+    isSending = true;
+    setTimeout(function() { isSending = false; }, 500);
+
+    var text = q.value.trim();
+    if (!text) return;
+
+    addMsg(text, 'user');
+    q.value = '';
+
+    var emotion = detectEmotion(text);
+    typingIndicator.style.display = 'flex';
+    startThinking(emotion.during);
+
+    // Simulate network delay
+    setTimeout(function() {
+      typingIndicator.style.display = 'none';
+      stopThinking();
+      setEmotion(emotion.after, 1800);
+      
+      // The mock response
+      var mockResponse = "This is a demo response. To get real AI answers about your shop data, you need to connect the backend database.";
+      
+      // Add dynamic flavor based on the user's question
+      if (emotion.after === 'sad') {
+        mockResponse = "I see you are asking about pending dues. In the live version, I would pull exactly who owes you money from your database.";
+      } else if (emotion.after === 'happy' && text.toLowerCase().includes('sale')) {
+        mockResponse = "Your sales data looks great! In the live version, I would calculate your exact profit margins here.";
+      }
+
+      addMsg(mockResponse, 'bot');
+      
+      setEmotion('speaking', 900);
+      setTimeout(idleLoop, 1000);
+    }, 1500); // 1.5 second fake delay
+  };
+
+  q.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); window.kbSend(e); }
+  });
+});
