@@ -148,3 +148,101 @@ window.addEventListener('click', (e) => {
         document.body.style.overflow = '';
     }
 });
+// ================= AI GUIDE BOT LOGIC =================
+const aiBot = document.getElementById('ai-guide-bot');
+const aiChatText = document.getElementById('aiChatText');
+
+// Check if user already dismissed it
+if (!localStorage.getItem('shopsteward_ai_dismissed')) {
+  
+  // Show the bot after 2 seconds
+  setTimeout(() => {
+    aiBot.classList.add('show-chat');
+  }, 2000);
+
+  // Define the scroll zones
+  const zones = [
+    { 
+      id: 'top', 
+      message: 'Welcome to ShopSteward! Scroll down to see how we can help your shop.', 
+      bottom: '100px', 
+      right: '30px', 
+      handClass: '' 
+    },
+    { 
+      id: 'features', 
+      message: 'Generic software doesn\'t fit your shop. We build it around YOUR rules.', 
+      bottom: '200px', 
+      left: '30px', 
+      right: 'auto', 
+      handClass: 'point-right' 
+    },
+    { 
+      id: 'demo', 
+      message: 'Try the actual app! No install required. Just click to open.', 
+      bottom: '150px', 
+      left: 'auto', 
+      right: '30px', 
+      handClass: 'point-left' 
+    },
+    { 
+      id: 'pricing', 
+      message: 'Simple, honest pricing. No hidden charges. Pick a plan that fits.', 
+      bottom: '100px', 
+      left: '30px', 
+      right: 'auto', 
+      handClass: 'point-right' 
+    },
+    { 
+      id: 'contact', 
+      message: 'Ready to start? Message me directly on WhatsApp. I reply fast!', 
+      bottom: '150px', 
+      left: 'auto', 
+      right: '30px', 
+      handClass: 'point-down' 
+    }
+  ];
+
+  let currentZone = '';
+
+  // Use IntersectionObserver to detect scrolling into sections
+  const observerOptions = { threshold: 0.3 };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const zone = zones.find(z => z.id === entry.target.id || (z.id === 'top' && entry.target.tagName === 'SECTION' && !entry.target.id));
+        
+        if (zone && currentZone !== zone.id) {
+          currentZone = zone.id;
+          
+          // Update Text
+          aiChatText.textContent = zone.message;
+          
+          // Move Bot
+          aiBot.style.bottom = zone.bottom;
+          aiBot.style.left = zone.left;
+          aiBot.style.right = zone.right;
+          
+          // Update Hand Direction
+          aiBot.className = 'ai-guide-bot show-chat ' + zone.handClass;
+        }
+      }
+    });
+  }, observerOptions);
+
+  // Observe all sections
+  document.querySelectorAll('section, .nipe-strip, .steward-block').forEach(el => {
+    observer.observe(el);
+  });
+
+} else {
+  // Hide the bot entirely if already dismissed
+  aiBot.style.display = 'none';
+}
+
+// Dismiss Function (Must be attached to window so the inline HTML onclick can find it)
+window.dismissAIBot = function() {
+  aiBot.style.display = 'none';
+  localStorage.setItem('shopsteward_ai_dismissed', 'true');
+}
