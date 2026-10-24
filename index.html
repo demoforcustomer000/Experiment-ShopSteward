@@ -3188,12 +3188,19 @@
                     document.getElementById('a4-logo').style.display = 'block';
                 }
 
-                if (data.signature_url) {
+                               if (data.signature_url) {
                     document.getElementById('preview-sig-img').src = data.signature_url;
                     document.getElementById('preview-sig-img').style.display = 'block';
                     document.getElementById('sig-empty-txt').style.display = 'none';
                     document.getElementById('a4-signature').src = data.signature_url;
                     document.getElementById('a4-signature').style.display = 'block';
+
+                    // NEW: Update the agreement pages with the uploaded signature
+                    const founderSig1 = document.getElementById('founderSigSlot1');
+                    if (founderSig1) founderSig1.innerHTML = `<img src="${data.signature_url}" alt="Founder Signature" class="founder-sig-img">`;
+                    
+                    const founderSig2 = document.getElementById('founderSigSlot2');
+                    if (founderSig2) founderSig2.innerHTML = `<img src="${data.signature_url}" alt="Founder Signature" class="founder-sig-img">`;
                 }
                               if (data.seal_url) {
                     const sealSlot = document.getElementById('officialSealSlot');
@@ -4166,8 +4173,9 @@ window.agLoadClient = function (clientId) {
     const c = allClients.find(x => x.id === clientId);
     if (!c) return;
 
-    document.getElementById('ag-shop').value    = c.name || '';
-    document.getElementById('ag-owner').value   = c.owner_name || '';
+       document.getElementById('ag-shop').value    = c.name || '';
+    // Fallback to shop name if owner name is empty
+    document.getElementById('ag-owner').value   = c.owner_name || c.name || '';
     document.getElementById('ag-phone').value   = c.phone || '';
     document.getElementById('ag-address').value = c.address || '';
 
@@ -4192,8 +4200,9 @@ window.pickClientForAgreement = function (clientId) {
 
 function fillAgreementForm(a) {
     if (!a) return;
-    document.getElementById('ag-shop').value       = a.shop_name || '';
-    document.getElementById('ag-owner').value      = a.owner_name || '';
+       document.getElementById('ag-shop').value       = a.shop_name || '';
+    // Fallback to shop name if owner name is empty
+    document.getElementById('ag-owner').value      = a.owner_name || a.shop_name || '';
     document.getElementById('ag-phone').value      = a.phone || '';
     document.getElementById('ag-address').value    = a.address || '';
     document.getElementById('ag-user-id').value    = a.login_user_id || '';
