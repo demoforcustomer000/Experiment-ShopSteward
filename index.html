@@ -864,32 +864,34 @@
             transform: rotate(-4deg);
         }
 
-        /* ============================================================
-           PRINT ENGINE OPTIMIZATION
-           Hides UI, prints ONLY the razor-sharp A4 sheet
+                /* ============================================================
+           PRINT ENGINE OPTIMIZATION (Consolidated)
            ============================================================ */
-                        @media print {
+        @media print {
             @page {
                 size: A4 portrait;
                 margin: 0;
             }
+            
+            /* Universal Reset for Printing */
             html, body {
                 background: #ffffff !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 height: auto !important;
-                overflow: hidden !important;
+                overflow: visible !important; /* CRITICAL: Allows multi-page printing */
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
             
-            /* Hide standard UI entirely so it takes up ZERO space */
-            .studio-backdrop, .sidebar-dock, .top-navbar, #auth-modal, .invoice-builder-form {
+            /* Hide all UI elements so they take up ZERO space */
+            .studio-backdrop, .sidebar-dock, .top-navbar, #auth-modal, 
+            .invoice-builder-form, .agreement-form-card {
                 display: none !important;
             }
 
-            /* Flatten the app layout */
-            .app-layout, .workspace, .view-pane, #view-create {
+            /* Flatten all containers so they don't constrain the document */
+            .app-layout, .workspace, .view-pane, #view-create, #view-agreement {
                 display: block !important;
                 position: static !important;
                 margin: 0 !important;
@@ -900,8 +902,9 @@
                 background: transparent !important;
             }
 
-            /* Break the CSS Grid so the invoice is the only thing left */
-            #view-create > div[style*="grid-template-columns"] {
+            /* Break CSS Grids so content flows linearly */
+            #view-create > div[style*="grid-template-columns"],
+            body.print-agreement .agreement-form-grid {
                 display: block !important;
                 margin: 0 !important;
             }
@@ -912,16 +915,24 @@
                 margin: 0 !important;
                 padding: 0 !important;
                 width: 100% !important;
+                overflow: visible !important;
             }
 
-            /* Strict 1-Page A4 Constraints */
+            /* ==========================================
+               INVOICE PRINT SPECIFICS
+               ========================================== */
+            body.print-invoice .page-a4,
+            body.print-agreement .a4-sheet {
+                display: none !important;
+            }
+
             .a4-sheet {
                 visibility: visible !important;
                 display: flex !important;
                 flex-direction: column !important;
                 position: relative !important;
                 width: 210mm !important;
-                height: 296.8mm !important; /* Slight buffer to prevent spillover */
+                height: 296.8mm !important; /* Buffer to prevent blank pages */
                 max-height: 296.8mm !important;
                 margin: 0 auto !important;
                 padding: 0 !important;
@@ -930,120 +941,50 @@
                 border-radius: 0 !important;
                 page-break-after: avoid !important;
                 page-break-inside: avoid !important;
-                overflow: hidden !important; /* Clips any accidental overflow */
+                overflow: hidden !important;
             }
             
-            .a4-sheet * {
-                visibility: visible !important;
+            .a4-sheet * { visibility: visible !important; }
+
+            /* ==========================================
+               AGREEMENT & CERTIFICATE PRINT SPECIFICS
+               ========================================== */
+            body.print-agreement .document-container {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-height: none !important; /* Removes the scroll constraint */
+                overflow: visible !important;
+                gap: 0 !important;
             }
 
-            /* Force the table wrapper to take up available space */
-            .a4-sheet > div[style*="padding: 4mm"] {
-                flex: 1 1 auto !important;
+            body.print-agreement .page-a4 {
+                display: flex !important;
+                width: 210mm !important;
+                height: 296.8mm !important; /* Buffer to prevent 5th blank page */
+                max-height: 296.8mm !important;
+                min-height: 296.8mm !important;
+                margin: 0 auto !important;
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                overflow: hidden !important;
+            }
+            
+            body.print-agreement .page-a4 * { visibility: visible !important; }
+
+            body.print-agreement .page-a4:last-child {
+                page-break-after: auto !important;
+                break-after: auto !important;
             }
         }
-    /* Inputs — must sit ABOVE the black or they vanish */
-.input-liquid {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    color: var(--text-title);
-}
-.input-liquid::placeholder { color: var(--text-faint); }
-.input-liquid:focus {
-    border-color: var(--primary-accent);
-    background: rgba(255, 255, 255, 0.06);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.28);
-}
-
-/* Outline button */
-.btn-outline {
-    background: rgba(255, 255, 255, 0.03);
-    color: var(--text-title);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-}
-.btn-outline:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.24);
-}
-
-/* Primary — hotter indigo gradient reads better on pure black */
-.btn-primary {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 4px 24px rgba(99, 102, 241, 0.5);
-}
-.btn-primary:hover {
-    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
-    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.6);
-}
-
-/* Success — brighter green for OLED */
-.btn-success {
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
-}
-
-/* Dock */
-.dock-item            { color: var(--text-muted); }
-.dock-item:hover      { color: #ffffff; background: rgba(255, 255, 255, 0.08); }
-.dock-item.active     { background: var(--primary); color: #fff; box-shadow: 0 0 24px var(--primary-glow); }
-.dock-item::after     { background: rgba(255, 255, 255, 0.96); color: #000; border: none; }
-
-/* Divider */
-.top-navbar { border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
-
-/* Tables */
-.data-table th  { border-bottom: 1px solid rgba(255, 255, 255, 0.10); }
-.data-table td  { border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
-.data-row:hover { background: rgba(255, 255, 255, 0.035); }
-
-/* Badges — brighter so they pop on pure black */
-.badge-success { background: rgba(34,197,94,0.12);  color: #4ade80; border-color: rgba(34,197,94,0.35); }
-.badge-warning { background: rgba(245,158,11,0.12); color: #fbbf24; border-color: rgba(245,158,11,0.35); }
-.badge-primary { background: rgba(99,102,241,0.15); color: #a5b4fc; border-color: rgba(99,102,241,0.40); }
-
-/* A4 sheet keeps its own printed look — but its shadow needs to be stronger on black */
-.a4-sheet {
-    box-shadow:
-        0 32px 80px -20px rgba(0, 0, 0, 1),
-        0 0 0 1px rgba(255, 255, 255, 0.12);
-}
-
-/* Paid stamp on light sheet — unchanged, but bump contrast */
-.paid-stamp { border-width: 2.5px; font-weight: 900; }
-
-/* Logout icon */
-#btn-logout { color: #f87171; }    
-
-/* ============================================================
-   PRINT SCOPING — controls which document prints when
-   body.print-invoice    → prints only .a4-sheet (invoice)
-   body.print-agreement  → prints only .page-a4 stack (agreement)
-   ============================================================ */
-@media print {
-  body.print-invoice .page-a4,
-  body.print-agreement .a4-sheet {
-    display: none !important;
-  }
-
-  body.print-agreement .document-container,
-  body.print-agreement .invoice-preview-wrapper {
-    display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-  }
-
-  body.print-agreement .page-a4 {
-    page-break-after: always !important;
-    break-after: page !important;
-  }
-  body.print-agreement .page-a4:last-child {
-    page-break-after: auto !important;
-    break-after: auto !important;
-  }
-}
      /* ==========================================
    DOCUMENT CONTAINER & A4 PAGE GEOMETRY
    ========================================== */
@@ -4146,7 +4087,14 @@ Object.entries(AG_SYNC).forEach(([inputId, selectors]) => {
     el.addEventListener('input', () => {
         selectors.forEach(sel => {
             document.querySelectorAll(sel).forEach(node => {
-                node.textContent = el.value;
+                // If Owner Name is empty, fallback to Shop Name
+                if (inputId === 'ag-owner') {
+                    const ownerVal = el.value.trim();
+                    const shopVal = document.getElementById('ag-shop').value.trim();
+                    node.textContent = ownerVal || shopVal || 'Client Name';
+                } else {
+                    node.textContent = el.value;
+                }
             });
         });
     });
