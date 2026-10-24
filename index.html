@@ -1731,12 +1731,15 @@
             <!-- Top Navbar -->
             <header class="top-navbar">
                 <div class="brand-pill">
-                    <div class="brand-badge">SS</div>
-                    <div>
-                        <h2 style="font-size: 18px;" id="header-biz-name">ShopSteward.in</h2>
-                        <span style="font-size: 11.5px; color: var(--text-muted);">Executive GST Billing & Accounting</span>
-                    </div>
-                </div>
+    <div class="brand-badge" id="top-nav-badge" style="overflow: hidden; padding: 0;">
+        <span id="top-nav-badge-text">SS</span>
+        <img id="top-nav-badge-img" src="" style="display: none; width: 100%; height: 100%; object-fit: contain; background: #ffffff; border-radius: 11px;">
+    </div>
+    <div>
+        <h2 style="font-size: 18px;" id="header-biz-name">ShopSteward.in</h2>
+        <span style="font-size: 11.5px; color: var(--text-muted);">Executive GST Billing & Accounting</span>
+    </div>
+</div>
 
                 <div style="display: flex; gap: 12px; align-items: center;">
                     <a href="#create" class="btn btn-primary" onclick="resetInvoiceBuilder()">
@@ -3144,12 +3147,34 @@
                 document.getElementById('prof-upi-id').value = data.upi_id || '8637560557@upi';
                 document.getElementById('prof-terms').value = data.default_terms || '';
 
-                if (data.logo_url) {
+                               if (data.logo_url) {
+                    // 1. Update Settings Preview & Invoice
                     document.getElementById('preview-logo-img').src = data.logo_url;
                     document.getElementById('preview-logo-img').style.display = 'block';
                     document.getElementById('logo-empty-txt').style.display = 'none';
                     document.getElementById('a4-logo').src = data.logo_url;
                     document.getElementById('a4-logo').style.display = 'block';
+
+                    // 2. Update Top Navbar Badge
+                    const navImg = document.getElementById('top-nav-badge-img');
+                    const navText = document.getElementById('top-nav-badge-text');
+                    if (navImg && navText) {
+                        navImg.src = data.logo_url;
+                        navImg.style.display = 'block';
+                        navText.style.display = 'none';
+                        // Remove the gradient background so the logo stands out cleanly
+                        document.getElementById('top-nav-badge').style.background = 'transparent';
+                        document.getElementById('top-nav-badge').style.boxShadow = '0 4px 15px rgba(255, 255, 255, 0.1)';
+                    }
+                } else {
+                    // Fallback if no logo is uploaded
+                    const navImg = document.getElementById('top-nav-badge-img');
+                    const navText = document.getElementById('top-nav-badge-text');
+                    if (navImg && navText) {
+                        navImg.style.display = 'none';
+                        navText.style.display = 'block';
+                        document.getElementById('top-nav-badge').style.background = 'linear-gradient(135deg, #4f46e5 0%, #0d9488 100%)';
+                    }
                 }
 
                                if (data.signature_url) {
