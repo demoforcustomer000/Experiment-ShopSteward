@@ -864,110 +864,88 @@
             transform: rotate(-4deg);
         }
 
-                /* ============================================================
-           PRINT ENGINE OPTIMIZATION (Consolidated)
+                        /* ============================================================
+           PRINT ENGINE OPTIMIZATION (Strict Isolated Printing)
            ============================================================ */
         @media print {
             @page {
                 size: A4 portrait;
                 margin: 0;
             }
-            
-            /* Universal Reset for Printing */
+
+            /* 1. Reset the page */
             html, body {
                 background: #ffffff !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 height: auto !important;
-                overflow: visible !important; /* CRITICAL: Allows multi-page printing */
+                overflow: visible !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            
-            /* Hide all UI elements so they take up ZERO space */
-            .studio-backdrop, .sidebar-dock, .top-navbar, #auth-modal, 
+
+            /* 2. Hide EVERYTHING by default */
+            body > *:not(#app-shell) {
+                display: none !important;
+            }
+
+            /* 3. Hide all UI panels and sidebars */
+            .sidebar-dock, .top-navbar, #auth-modal, 
             .invoice-builder-form, .agreement-form-card {
                 display: none !important;
             }
 
-            /* Flatten all containers so they don't constrain the document */
-            .app-layout, .workspace, .view-pane, #view-create, #view-agreement {
+            /* 4. Hide ALL view panes by default */
+            .view-pane {
+                display: none !important;
+            }
+
+            /* 5. ONLY show the active view being printed */
+            body.print-agreement #view-agreement,
+            body.print-invoice #view-create {
+                display: block !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #ffffff !important;
+            }
+
+            /* 6. Hide the top headers inside the views (Back button, Save button, etc.) */
+            #view-agreement > div:first-child,
+            #view-create > div:first-child {
+                display: none !important;
+            }
+
+            /* 7. Flatten all wrapper containers so they don't create gaps */
+            .app-layout, .workspace, .agreement-form-grid,
+            #view-create > div[style*="grid-template-columns"],
+            .document-container, .invoice-preview-wrapper {
                 display: block !important;
                 position: static !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 height: auto !important;
                 width: 100% !important;
-                overflow: visible !important;
-                background: transparent !important;
-            }
-
-            /* Break CSS Grids so content flows linearly */
-            #view-create > div[style*="grid-template-columns"],
-            body.print-agreement .agreement-form-grid {
-                display: block !important;
-                margin: 0 !important;
-            }
-
-            .invoice-preview-wrapper {
-                display: block !important;
-                position: static !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100% !important;
-                overflow: visible !important;
-            }
-
-            /* ==========================================
-               INVOICE PRINT SPECIFICS
-               ========================================== */
-            body.print-invoice .page-a4,
-            body.print-agreement .a4-sheet {
-                display: none !important;
-            }
-
-            .a4-sheet {
-                visibility: visible !important;
-                display: flex !important;
-                flex-direction: column !important;
-                position: relative !important;
-                width: 210mm !important;
-                height: 296.8mm !important; /* Buffer to prevent blank pages */
-                max-height: 296.8mm !important;
-                margin: 0 auto !important;
-                padding: 0 !important;
-                box-shadow: none !important;
-                border: none !important;
-                border-radius: 0 !important;
-                page-break-after: avoid !important;
-                page-break-inside: avoid !important;
-                overflow: hidden !important;
-            }
-            
-            .a4-sheet * { visibility: visible !important; }
-
-            /* ==========================================
-               AGREEMENT & CERTIFICATE PRINT SPECIFICS
-               ========================================== */
-            body.print-agreement .document-container {
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100% !important;
-                max-height: none !important; /* Removes the scroll constraint */
+                max-height: none !important;
                 overflow: visible !important;
                 gap: 0 !important;
+                box-shadow: none !important;
             }
 
-            body.print-agreement .page-a4 {
+            /* 8. Format the A4 Pages */
+            body.print-agreement .page-a4,
+            body.print-invoice .a4-sheet {
                 display: flex !important;
+                flex-direction: column !important;
                 width: 210mm !important;
-                height: 296.8mm !important; /* Buffer to prevent 5th blank page */
+                height: 296.8mm !important; /* Slight buffer prevents phantom blank pages */
                 max-height: 296.8mm !important;
                 min-height: 296.8mm !important;
                 margin: 0 auto !important;
+                padding: 16mm 20mm 14mm 20mm !important;
                 box-shadow: none !important;
                 border: none !important;
                 border-radius: 0 !important;
@@ -976,13 +954,24 @@
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
                 overflow: hidden !important;
+                background: #ffffff !important;
             }
-            
-            body.print-agreement .page-a4 * { visibility: visible !important; }
 
-            body.print-agreement .page-a4:last-child {
+            /* Invoice has its own inner padding, so remove the outer padding */
+            body.print-invoice .a4-sheet {
+                padding: 0 !important;
+            }
+
+            /* 9. Remove the page break from the LAST page so it doesn't print an extra blank page */
+            body.print-agreement .page-a4:last-child,
+            body.print-invoice .a4-sheet:last-child {
                 page-break-after: auto !important;
                 break-after: auto !important;
+            }
+
+            /* Hide footers during print to prevent accidental overflow */
+            .page-footer {
+                display: none !important;
             }
         }
      /* ==========================================
