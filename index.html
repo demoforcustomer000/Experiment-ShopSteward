@@ -973,6 +973,38 @@
             .page-footer {
                 display: none !important;
             }
+                        /* ==========================================
+               FORCE STARK BLACK TEXT FOR TABLES & CLAUSES
+               ========================================== */
+            
+            /* Force all table text to be completely solid black and slightly bolder */
+            .data-table td,
+            .cell-label,
+            .cell-value,
+            .clause-text {
+                color: #000000 !important;
+                opacity: 1 !important;
+                font-weight: 600 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Make the label background slightly darker for better contrast */
+            .cell-label {
+                background-color: #e2e8f0 !important;
+                border: 1px solid #000000 !important;
+            }
+
+            /* Make the table borders sharper */
+            .data-table, 
+            .data-table td {
+                border: 1px solid #000000 !important;
+            }
+
+            /* Make the watermark even fainter so it doesn't interfere with the text */
+            .watermark-layer {
+                opacity: 0.015 !important; 
+            }
         }
      /* ==========================================
    DOCUMENT CONTAINER & A4 PAGE GEOMETRY
