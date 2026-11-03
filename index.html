@@ -3070,11 +3070,11 @@ function renderDashboard(content){
   const expiredProductIds = new Set(expiredBatches.map(b => b.product_id));
   const expiredCount      = expiredProductIds.size;
 
-  /* ── Recent invoices ── */
+    /* ── Recent invoices (LIMITED TO 4) ── */
   const recent = DB.invoices
     .slice()
     .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
-    .slice(0, 8);
+    .slice(0, 4); 
 
   /* ── Greeting based on hour ── */
   const hour  = new Date().getHours();
@@ -3249,6 +3249,89 @@ function renderDashboard(content){
             </div>
           </div>
         ` : ''}
+                <!-- FILL EMPTY SPACE: QUICK ACTIONS & EXPIRING SOON -->
+        <div class="grid-2">
+          
+          <!-- Quick Actions -->
+          <div class="card">
+            <div class="card-title">Quick Actions</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <button class="btn btn-ghost" onclick="location.hash='#/new-invoice'" style="justify-content:flex-start;padding:12px;height:auto;">
+                <span style="font-size:20px;margin-right:8px;">➕</span>
+                <div style="text-align:left;line-height:1.2;">
+                  <div style="font-weight:700;font-size:13px;">New Invoice</div>
+                  <div style="font-size:11px;color:var(--text-2);font-weight:400;">Bill a customer</div>
+                </div>
+              </button>
+              
+              <button class="btn btn-ghost" onclick="openCustomerForm()" style="justify-content:flex-start;padding:12px;height:auto;">
+                <span style="font-size:20px;margin-right:8px;">👥</span>
+                <div style="text-align:left;line-height:1.2;">
+                  <div style="font-weight:700;font-size:13px;">Add Customer</div>
+                  <div style="font-size:11px;color:var(--text-2);font-weight:400;">New patient</div>
+                </div>
+              </button>
+
+              <button class="btn btn-ghost" onclick="openProductForm()" style="justify-content:flex-start;padding:12px;height:auto;">
+                <span style="font-size:20px;margin-right:8px;">💊</span>
+                <div style="text-align:left;line-height:1.2;">
+                  <div style="font-weight:700;font-size:13px;">Add Product</div>
+                  <div style="font-size:11px;color:var(--text-2);font-weight:400;">New stock item</div>
+                </div>
+              </button>
+
+              <button class="btn btn-ghost" onclick="openExpenseForm()" style="justify-content:flex-start;padding:12px;height:auto;">
+                <span style="font-size:20px;margin-right:8px;">💸</span>
+                <div style="text-align:left;line-height:1.2;">
+                  <div style="font-weight:700;font-size:13px;">Add Expense</div>
+                  <div style="font-size:11px;color:var(--text-2);font-weight:400;">Record a cost</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Expiring Soon -->
+          <div class="card">
+            <div class="card-title">
+              Expiring Soon 
+              <a href="#/batches" style="font-size:11px;font-weight:600;color:var(--teal-700);text-decoration:none">View all ›</a>
+            </div>
+            ${nearExp.length === 0 ? `
+              <div class="empty" style="padding:20px 10px">
+                <div class="empty-icon" style="font-size:32px;margin-bottom:6px">✅</div>
+                <div style="font-weight:600;font-size:13px;color:var(--text)">All clear</div>
+                <div style="font-size:11px;color:var(--text-2)">No batches expiring soon.</div>
+              </div>
+            ` : `
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                ${nearExp
+                  .sort((a, b) => String(a.expiry_date).localeCompare(String(b.expiry_date)))
+                  .slice(0, 4) // Show top 4 expiring
+                  .map(b => {
+                    const prod = DB.products.find(p => p.id === b.product_id);
+                    const days = daysToExpiry(b.expiry_date);
+                    return `
+                      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;">
+                        <div style="min-width:0;flex:1;">
+                          <div style="font-weight:600;font-size:13px;color:#92400e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                            ${esc(prod ? prod.name : 'Unknown')}
+                          </div>
+                          <div style="font-size:11px;color:#b45309;margin-top:2px;">
+                            Batch ${esc(b.batch_no)} · Qty ${fmtNum(b.qty)}
+                          </div>
+                        </div>
+                        <div style="text-align:right;flex-shrink:0;margin-left:8px;">
+                          <div style="font-weight:700;font-size:12px;color:#b45309;">${days}d left</div>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+              </div>
+            `}
+          </div>
+        </div>
+
+      <!-- END .dash-main -->
       </div>
 
       <!-- RIGHT COLUMN: CHARTS & SMALL WIDGETS -->
