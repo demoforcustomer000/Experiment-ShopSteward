@@ -1292,6 +1292,90 @@ tbody tr:hover td{background:#fafbfc}
   }
   .t-resize{transition:none !important}
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   NEW 4-COLUMN KPI CARDS
+   ══════════════════════════════════════════════════════════════════ */
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.hero-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 140px;
+}
+
+/* Decorative background circles */
+.hero-card::before {
+  content: ""; position: absolute; right: -20px; top: -20px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); pointer-events: none;
+}
+.hero-card::after {
+  content: ""; position: absolute; right: 40px; bottom: -40px;
+  width: 80px; height: 80px; border-radius: 50%;
+  background: rgba(255,255,255,0.08); pointer-events: none;
+}
+
+/* Card Color Themes */
+.hero-teal   { background: linear-gradient(135deg, #0d9488 0%, #10b981 100%); }
+.hero-blue   { background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); }
+.hero-red    { background: linear-gradient(135deg, #dc2626 0%, #f87171 100%); }
+.hero-purple { background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); }
+
+.hero-card .h-label {
+  font-size: 11px; opacity: 0.9; text-transform: uppercase;
+  letter-spacing: 0.5px; font-weight: 700; margin-bottom: 4px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.hero-card .h-value {
+  font-size: 28px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.1;
+}
+.hero-card .h-sub {
+  font-size: 12px; opacity: 0.85; margin-top: 6px; font-weight: 500;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* Dropdown inside the blue card */
+.period-select {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.period-select option {
+  background: #1e293b; /* Dark background for options */
+  color: #fff;
+}
+
+/* Make it responsive */
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 10px; }
+  .hero-card { min-height: 120px; padding: 16px; }
+  .hero-card .h-value { font-size: 24px; }
+}
+     
 </style>
 </head>
 <body>
@@ -2980,19 +3064,57 @@ function renderDashboard(content){
       </div>
     </div>
 
-    <!-- HERO -->
-    <div class="hero">
-      <span class="hero-pill">📍 Today · ${fmtDate(today)}</span>
-      <div class="hero-label">Today's Sales</div>
-      <div class="hero-value">${rs(todaySales)}</div>
-      <div class="hero-split">
-        <div class="hero-split-item">
-          <div class="lbl"><span class="hero-split-dot" style="background:#fff"></span>Bills</div>
-          <div class="val">${todayBills}</div>
+        <!-- 4-COLUMN KPI CARDS -->
+    <div class="hero-grid">
+      <!-- KPI 1: Today's Sales -->
+      <div class="hero-card hero-teal">
+        <div>
+          <div class="h-label">Today's Sales</div>
+          <div class="h-value">${rs(todaySales)}</div>
         </div>
-        <div class="hero-split-item">
-          <div class="lbl"><span class="hero-split-dot" style="background:#a7f3d0"></span>Avg Bill</div>
-          <div class="val">${rs(todayAvg)}</div>
+        <div class="h-sub">
+          <span>🧾 ${todayBills} Bill${todayBills === 1 ? '' : 's'}</span>
+          <span>·</span>
+          <span>Avg: ${rs(todayAvg)}</span>
+        </div>
+      </div>
+
+      <!-- KPI 2: Period Sales (Filterable) -->
+      <div class="hero-card hero-blue">
+        <div>
+          <div class="h-label">
+            <span>Sales Revenue</span>
+            <select class="period-select" id="period-filter">
+              <option value="week">This Week</option>
+              <option value="month" selected>This Month</option>
+              <option value="quarter">This Quarter</option>
+              <option value="year">This Year</option>
+            </select>
+          </div>
+          <div class="h-value" id="period-sales-val">₹0.00</div>
+        </div>
+        <div class="h-sub" id="period-inv-count">0 Invoices</div>
+      </div>
+
+      <!-- KPI 3: Total Due -->
+      <div class="hero-card hero-red">
+        <div>
+          <div class="h-label">Total Outstanding Due</div>
+          <div class="h-value">${rs(custDue)}</div>
+        </div>
+        <div class="h-sub">
+          ⚠️ ${dueCustCount} Customer${dueCustCount === 1 ? '' : 's'} pending
+        </div>
+      </div>
+
+      <!-- KPI 4: Today's Doctors -->
+      <div class="hero-card hero-purple">
+        <div>
+          <div class="h-label">Today's Doctors</div>
+          <div class="h-value" id="today-docs-val">0</div>
+        </div>
+        <div class="h-sub">
+          🩺 Unique doctors seen today
         </div>
       </div>
     </div>
@@ -3194,6 +3316,68 @@ function renderDashboard(content){
       }
     }
   }));
+       /* ══════════════════════════════════════════════════════════════════
+     KPI 2 & KPI 4 LOGIC
+     ══════════════════════════════════════════════════════════════════ */
+
+  /* ── KPI 2: Filterable Period Sales ── */
+  function calcPeriodSales(period) {
+    const today = new Date();
+    let startDate = new Date();
+    
+    if (period === 'week') {
+      const day = today.getDay() || 7; 
+      startDate.setDate(today.getDate() - day + 1); // Monday
+    } else if (period === 'month') {
+      startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    } else if (period === 'quarter') {
+      const quarter = Math.floor(today.getMonth() / 3);
+      startDate = new Date(today.getFullYear(), quarter * 3, 1);
+    } else if (period === 'year') {
+      startDate = new Date(today.getFullYear(), 0, 1);
+    }
+    
+    const startStr = startDate.toISOString().slice(0, 10);
+    const endStr = today.toISOString().slice(0, 10);
+
+    let total = 0;
+    let count = 0;
+    
+    DB.invoices.forEach(inv => {
+      const d = txDate(inv, 'invoice_date');
+      if (d >= startStr && d <= endStr && !String(inv.invoice_no).startsWith(RETURN_PREFIX)) {
+        total += Number(inv.total || 0);
+        count++;
+      }
+    });
+
+    const valEl = document.getElementById('period-sales-val');
+    const countEl = document.getElementById('period-inv-count');
+    if (valEl) valEl.textContent = rs(total);
+    if (countEl) countEl.textContent = `${count} Invoice${count === 1 ? '' : 's'}`;
+  }
+
+  // Initialize and wire up the dropdown
+  const periodFilter = document.getElementById('period-filter');
+  if (periodFilter) {
+    calcPeriodSales(periodFilter.value);
+    periodFilter.addEventListener('change', (e) => calcPeriodSales(e.target.value));
+  }
+
+  /* ── KPI 4: Today's Doctors Placeholder Logic ── */
+  // For now, it just counts the unique doctors who visited today.
+  const uniqueDocsToday = new Set();
+  
+  todayInv.forEach(inv => {
+    if (inv.doctor_name && inv.doctor_name.trim() !== '') {
+      uniqueDocsToday.add(inv.doctor_name.trim());
+    }
+  });
+
+  const docsEl = document.getElementById('today-docs-val');
+  if (docsEl) {
+    docsEl.textContent = uniqueDocsToday.size;
+  }
 }
 
 /* ─────────────────────────────────────────────
