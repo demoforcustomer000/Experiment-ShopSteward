@@ -3107,17 +3107,19 @@ function renderDashboard(content){
         </div>
       </div>
 
-      <!-- KPI 4: Today's Doctors -->
-      <div class="hero-card hero-purple">
+            <!-- KPI 4: Today's Doctors -->
+      <div class="hero-card hero-purple" id="kpi-doc-card" style="cursor:pointer">
         <div>
           <div class="h-label">Today's Doctors</div>
-          <div class="h-value" id="today-docs-val">0</div>
+          <!-- This div will hold the names, limited to 3 lines -->
+          <div id="kpi-doc-names" class="h-value" style="font-size:14px;line-height:1.4;margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
+            Loading...
+          </div>
         </div>
-        <div class="h-sub">
-          🩺 Unique doctors seen today
+        <div class="h-sub" id="kpi-doc-sub">
+          🩺 Click to view all
         </div>
       </div>
-    </div>
 
     <!-- MINI KPI ROW -->
     <div class="mini-kpi-row" style="margin-top:14px">
@@ -3364,19 +3366,49 @@ function renderDashboard(content){
     periodFilter.addEventListener('change', (e) => calcPeriodSales(e.target.value));
   }
 
-  /* ── KPI 4: Today's Doctors Placeholder Logic ── */
-  // For now, it just counts the unique doctors who visited today.
-  const uniqueDocsToday = new Set();
-  
-  todayInv.forEach(inv => {
-    if (inv.doctor_name && inv.doctor_name.trim() !== '') {
-      uniqueDocsToday.add(inv.doctor_name.trim());
-    }
-  });
+    /* ── KPI 4: Today's Doctors Logic ── */
+  const weekDaysMap = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const todayIndex = new Date().getDay();
+  const todayDayName = weekDaysMap[todayIndex];
 
-  const docsEl = document.getElementById('today-docs-val');
-  if (docsEl) {
-    docsEl.textContent = uniqueDocsToday.size;
+  // Find all doctors who visit today
+  const todaysDoctors = DB.doctors.filter(doc => 
+    doc.visiting_days && doc.visiting_days.includes(todayDayName)
+  );
+
+  const namesEl = document.getElementById('kpi-doc-names');
+  const subEl = document.getElementById('kpi-doc-sub');
+  const cardEl = document.getElementById('kpi-doc-card');
+
+  if (todaysDoctors.length === 0) {
+    namesEl.textContent = "No doctor today";
+    subEl.textContent = "Have a relaxing day!";
+    cardEl.style.cursor = "default";
+  } else {
+    // Join names with a comma
+    namesEl.innerHTML = todaysDoctors.map(d => `<b>${esc(d.name)}</b>`).join(', ');
+    subEl.textContent = `👨‍⚕️ ${todaysDoctors.length} Doctor${todaysDoctors.length === 1 ? '' : 's'} visiting today`;
+
+    // Add click event to open a modal with the full list
+    cardEl.onclick = () => {
+      openModal(`
+        <h2 style="font-size:16px;font-weight:700;margin-bottom:14px">Doctors Visiting Today (${todayDayName})</h2>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${todaysDoctors.map(d => `
+            <div style="padding:12px;border:1px solid var(--border);border-radius:10px;background:#f8fafc;display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:700;font-size:14px;color:var(--text)">${esc(d.name)}</div>
+                ${d.hospital ? `<div style="font-size:12px;color:var(--text-2);margin-top:2px">${esc(d.hospital)}</div>` : ''}
+              </div>
+              ${d.phone ? `<a href="tel:${esc(d.phone)}" class="btn btn-ghost btn-sm">📞 Call</a>` : ''}
+            </div>
+          `).join('')}
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:16px">
+          <button class="btn btn-primary" onclick="closeModal()">Close</button>
+        </div>
+      `);
+    };
   }
 }
 
@@ -4271,7 +4303,19 @@ function renderDoctors(content){
    7. DOCTOR FORM
    ───────────────────────────────────────────── */
 function openDoctorForm(existing){
-  const d = existing || { name: '', hospital: '', phone: '', notes: '' };
+  const d = existing || { name: '', hospital: '', phone: '', notes: '', visiting_days: [] };
+  
+  // Ensure visiting_days is an array
+  const selectedDays = d.visiting_days || [];
+  const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  
+  // Generate the checkboxes
+  const daysHTML = weekDays.map(day => `
+    <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;background:#f8fafc;padding:8px;border-radius:8px;border:1px solid var(--border)">
+      <input type="checkbox" name="visiting_days" value="${day}" ${selectedDays.includes(day) ? 'checked' : ''} style="width:16px;height:16px;accent-color:var(--teal-600)">
+      ${day}
+    </label>
+  `).join('');
 
   openModal(`
     <h2 style="font-size:16px;font-weight:700;margin-bottom:14px">${existing ? 'Edit' : 'New'} Doctor</h2>
@@ -4282,6 +4326,15 @@ function openDoctorForm(existing){
         <input class="input" name="hospital" value="${esc(d.hospital || '')}"></div>
       <div><label class="label">Phone</label>
         <input class="input" type="tel" name="phone" value="${esc(d.phone || '')}"></div>
+      
+      <!-- NEW: Visiting Days -->
+      <div>
+        <label class="label">Visiting Days (Which days does this doctor visit?)</label>
+        <div class="grid-4" style="gap:8px;margin-top:6px">
+          ${daysHTML}
+        </div>
+      </div>
+
       <div><label class="label">Notes</label>
         <input class="input" name="notes" value="${esc(d.notes || '')}" placeholder="Speciality, area, etc."></div>
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
@@ -4292,12 +4345,17 @@ function openDoctorForm(existing){
   `, root => {
     root.querySelector('#df').onsubmit = async e => {
       e.preventDefault();
+      
+      // Collect checked days
+      const checkedDays = [...e.target.querySelectorAll('input[name="visiting_days"]:checked')].map(cb => cb.value);
+      
       const fd = new FormData(e.target);
       const data = {
         name:     (fd.get('name') || '').trim(),
         hospital: (fd.get('hospital') || '').trim(),
         phone:    (fd.get('phone') || '').trim(),
-        notes:    (fd.get('notes') || '').trim()
+        notes:    (fd.get('notes') || '').trim(),
+        visiting_days: checkedDays
       };
       if(!data.name){ toast('Doctor name is required', 'error'); return; }
 
@@ -4320,7 +4378,6 @@ function openDoctorForm(existing){
     };
   });
 }
-
 /* ─────────────────────────────────────────────
    8. DOCTOR PROFILE
    ───────────────────────────────────────────── */
@@ -4343,14 +4400,17 @@ async function renderDoctorProfile(content, id){
 
     <div style="display:flex;align-items:center;gap:14px;margin:14px 0 18px;flex-wrap:wrap">
       <div class="list-avatar" style="width:56px;height:56px;font-size:22px;background:var(--purple-bg);color:var(--purple)">${esc(init)}</div>
-      <div style="flex:1;min-width:0">
+            <div style="flex:1;min-width:0">
         <h1 style="font-size:20px;font-weight:700;margin-bottom:2px">${esc(d.name)}</h1>
-        <p class="muted text-sm">
+        <p class="muted text-sm" style="margin-bottom:6px;">
           ${d.hospital ? '🏥 ' + esc(d.hospital) + '   ' : ''}
           ${d.phone ? '📞 ' + esc(d.phone) : ''}
         </p>
+        <!-- NEW: Show visiting days -->
+        <div style="font-size:12px;font-weight:600;color:var(--purple)">
+          🗓 Visits: ${d.visiting_days && d.visiting_days.length ? d.visiting_days.join(', ') : 'Not scheduled'}
+        </div>
       </div>
-    </div>
 
     <div class="page-actions" style="margin-bottom:14px">
       <button class="btn btn-ghost btn-sm" id="btn-edit-d">✎ Edit</button>
