@@ -1375,6 +1375,34 @@ tbody tr:hover td{background:#fafbfc}
   .hero-card { min-height: 120px; padding: 16px; }
   .hero-card .h-value { font-size: 24px; }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   PC DASHBOARD GRID
+   ══════════════════════════════════════════════════════════════════ */
+.dashboard-body {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Left side is 2/3, Right side is 1/3 */
+  gap: 24px;
+  margin-top: 24px;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-body {
+    grid-template-columns: 1fr; /* Stack on smaller screens */
+  }
+}
+
+.dash-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dash-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
      
 </style>
 </head>
@@ -3052,7 +3080,7 @@ function renderDashboard(content){
   const hour  = new Date().getHours();
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
-  content.innerHTML = `
+    content.innerHTML = `
     <div class="page-head">
       <div>
         <h1>${greet}, ${esc(SETTINGS.owner_name || 'Owner')} 👋</h1>
@@ -3064,9 +3092,9 @@ function renderDashboard(content){
       </div>
     </div>
 
-        <!-- 4-COLUMN KPI CARDS -->
+    <!-- 4-COLUMN HERO CARDS -->
     <div class="hero-grid">
-      <!-- KPI 1: Today's Sales -->
+      <!-- 1. Today's Sales -->
       <div class="hero-card hero-teal">
         <div>
           <div class="h-label">Today's Sales</div>
@@ -3079,7 +3107,7 @@ function renderDashboard(content){
         </div>
       </div>
 
-      <!-- KPI 2: Period Sales (Filterable) -->
+      <!-- 2. Period Sales -->
       <div class="hero-card hero-blue">
         <div>
           <div class="h-label">
@@ -3096,7 +3124,7 @@ function renderDashboard(content){
         <div class="h-sub" id="period-inv-count">0 Invoices</div>
       </div>
 
-      <!-- KPI 3: Total Due -->
+      <!-- 3. Total Due -->
       <div class="hero-card hero-red">
         <div>
           <div class="h-label">Total Outstanding Due</div>
@@ -3107,12 +3135,11 @@ function renderDashboard(content){
         </div>
       </div>
 
-            <!-- KPI 4: Today's Doctors -->
+      <!-- 4. Today's Doctors -->
       <div class="hero-card hero-purple" id="kpi-doc-card" style="cursor:pointer">
         <div>
           <div class="h-label">Today's Doctors</div>
-          <!-- This div will hold the names, limited to 3 lines -->
-          <div id="kpi-doc-names" class="h-value" style="font-size:14px;line-height:1.4;margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
+          <div id="kpi-doc-names" class="h-value" style="font-size:14px;line-height:1.4;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
             Loading...
           </div>
         </div>
@@ -3120,144 +3147,160 @@ function renderDashboard(content){
           🩺 Click to view all
         </div>
       </div>
-
-    <!-- MINI KPI ROW -->
-    <div class="mini-kpi-row" style="margin-top:14px">
-      <div class="mini-kpi" onclick="location.hash='#/invoices'">
-        <div class="num">${todayBills}</div>
-        <div class="lbl">Today</div>
-      </div>
-      <div class="mini-kpi" onclick="location.hash='#/products'">
-        <div class="num" style="color:${lowStockCount > 0 ? 'var(--red)' : 'var(--text)'}">${lowStockCount}</div>
-        <div class="lbl">Low Stock</div>
-      </div>
-      <div class="mini-kpi" onclick="location.hash='#/batches'">
-        <div class="num" style="color:${nearExpCount > 0 ? 'var(--amber)' : 'var(--text)'}">${nearExpCount}</div>
-        <div class="lbl">Near Expiry</div>
-      </div>
-      <div class="mini-kpi" onclick="location.hash='#/customers'">
-        <div class="num">${dueCustCount}</div>
-        <div class="lbl">Due Cust</div>
-      </div>
     </div>
 
-    <!-- ACTION BANNER -->
-    <a href="#/new-invoice" class="action-banner" style="margin-top:14px">
-      <span class="icon">➕</span>
-      <span class="txt">
-        <b>New Invoice</b>
-        <small>Create a customer bill — batch &amp; expiry auto-picked</small>
-      </span>
-      <span class="chev">›</span>
-    </a>
+    <!-- MAIN DASHBOARD 2-COLUMN LAYOUT -->
+    <div class="dashboard-body">
+      
+      <!-- LEFT COLUMN: ACTIONS & RECENT BILLS -->
+      <div class="dash-main">
+        
+        <!-- ACTION BANNER -->
+        <a href="#/new-invoice" class="action-banner" style="margin-top:0">
+          <span class="icon">➕</span>
+          <span class="txt">
+            <b>New Invoice</b>
+            <small>Create a customer bill — batch &amp; expiry auto-picked</small>
+          </span>
+          <span class="chev">›</span>
+        </a>
 
-    <!-- PASTEL TILES -->
-    <div class="tile-row" style="margin-top:14px">
-      <div class="tile tile-amber" onclick="location.hash='#/batches'">
-        <div class="tile-icon">⏰</div>
-        <div class="num">${nearExpCount}</div>
-        <div class="lbl">Near Expiry</div>
-      </div>
-      <div class="tile tile-red" onclick="location.hash='#/batches'">
-        <div class="tile-icon">⚠️</div>
-        <div class="num">${expiredCount}</div>
-        <div class="lbl">Expired</div>
-      </div>
-      <div class="tile tile-pink" onclick="location.hash='#/customers'">
-        <div class="tile-icon">💸</div>
-        <div class="num">${fmtNum(dueCustCount)}</div>
-        <div class="lbl">Due Amount</div>
-      </div>
-    </div>
-
-    <!-- RECENT BILLS -->
-    <div class="list-section-head">
-      <h3>Recent Bills</h3>
-      <a href="#/invoices" style="margin-left:auto;font-size:12px;font-weight:600;color:var(--teal-700);text-decoration:none">View all ›</a>
-    </div>
-    <div>
-      ${recent.length === 0
-        ? `<div class="card text-center muted" style="padding:30px">
-             <div style="font-size:36px;opacity:.4;margin-bottom:10px">📄</div>
-             <div style="font-weight:600;color:var(--text);margin-bottom:4px">No invoices yet</div>
-             <div style="font-size:12px">Create your first bill to get started.</div>
-           </div>`
-        : recent.map(inv => {
-            const cust  = DB.customers.find(c => c.id === inv.customer_id);
-            const name  = inv.customer_name || (cust && cust.name) || 'Walk-in';
-            const init  = (name || 'W').charAt(0).toUpperCase();
-            const due   = Number(inv.due || 0);
-            return `
-              <a href="#/invoice/${inv.id}" class="list-row">
-                <div class="list-avatar">${esc(init)}</div>
-                <div class="list-body">
-                  <div class="name">${esc(name)}</div>
-                  <div class="sub">
-                    <span>${esc(inv.invoice_no || '')}</span>
-                    <span>·</span>
-                    <span>${fmtDate(txDate(inv, 'invoice_date'))}</span>
-                  </div>
-                </div>
-                <div class="list-amount">
-                  <div class="amt">${rs(inv.total)}</div>
-                  <div class="tag" style="color:${due > 0 ? 'var(--red)' : 'var(--green)'};font-weight:600">
-                    ${due > 0 ? 'Due ' + rs(due) : 'Paid'}
-                  </div>
-                </div>
-              </a>`;
-          }).join('')
-      }
-    </div>
-
-    <!-- SALES TREND -->
-    <div class="card" style="margin-top:14px">
-      <div class="card-title">Sales Trend <small>Last 30 days</small></div>
-      <div style="position:relative;height:260px"><canvas id="dash-chart"></canvas></div>
-    </div>
-
-    <!-- LOW STOCK CARD -->
-    ${lowStockCount > 0 ? `
-      <div class="card" style="margin-top:14px">
-        <div class="card-title">
-          Low Stock Alerts
-          <small>${lowStockCount} item${lowStockCount === 1 ? '' : 's'}</small>
+        <!-- RECENT BILLS -->
+        <div>
+          <div class="list-section-head" style="margin-top:0">
+            <h3>Recent Bills</h3>
+            <a href="#/invoices" style="margin-left:auto;font-size:12px;font-weight:600;color:var(--teal-700);text-decoration:none">View all ›</a>
+          </div>
+          <div>
+            ${recent.length === 0
+              ? `<div class="card text-center muted" style="padding:30px">
+                   <div style="font-size:36px;opacity:.4;margin-bottom:10px">📄</div>
+                   <div style="font-weight:600;color:var(--text);margin-bottom:4px">No invoices yet</div>
+                   <div style="font-size:12px">Create your first bill to get started.</div>
+                 </div>`
+              : recent.map(inv => {
+                  const cust  = DB.customers.find(c => c.id === inv.customer_id);
+                  const name  = inv.customer_name || (cust && cust.name) || 'Walk-in';
+                  const init  = (name || 'W').charAt(0).toUpperCase();
+                  const due   = Number(inv.due || 0);
+                  return `
+                    <a href="#/invoice/${inv.id}" class="list-row">
+                      <div class="list-avatar">${esc(init)}</div>
+                      <div class="list-body">
+                        <div class="name">${esc(name)}</div>
+                        <div class="sub">
+                          <span>${esc(inv.invoice_no || '')}</span>
+                          <span>·</span>
+                          <span>${fmtDate(txDate(inv, 'invoice_date'))}</span>
+                        </div>
+                      </div>
+                      <div class="list-amount">
+                        <div class="amt">${rs(inv.total)}</div>
+                        <div class="tag" style="color:${due > 0 ? 'var(--red)' : 'var(--green)'};font-weight:600">
+                          ${due > 0 ? 'Due ' + rs(due) : 'Paid'}
+                        </div>
+                      </div>
+                    </a>`;
+                }).join('')
+            }
+          </div>
         </div>
-        <div class="tbl-wrap responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th style="text-align:right">Stock</th>
-                <th style="text-align:right">Alert At</th>
-              </tr>
-            </thead>
-            <tbody>
+
+        <!-- LOW STOCK ALERTS -->
+        ${lowStockCount > 0 ? `
+          <div class="card">
+            <div class="card-title">
+              Low Stock Alerts
+              <small>${lowStockCount} item${lowStockCount === 1 ? '' : 's'}</small>
+            </div>
+            <div class="tbl-wrap responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th style="text-align:right">Stock</th>
+                    <th style="text-align:right">Alert At</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${lowStockList.slice(0, 10).map(p => {
+                    const stock = productTotalStock(p);
+                    return `<tr>
+                      <td><strong>${esc(p.name)}</strong></td>
+                      <td style="text-align:right;color:var(--red);font-weight:600">${fmtNum(stock)} ${esc(p.unit || '')}</td>
+                      <td style="text-align:right;color:var(--text-2)">${fmtNum(p.low_stock_alert || 0)}</td>
+                    </tr>`;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+            <div class="mobile-list">
               ${lowStockList.slice(0, 10).map(p => {
                 const stock = productTotalStock(p);
-                return `<tr>
-                  <td><strong>${esc(p.name)}</strong></td>
-                  <td style="text-align:right;color:var(--red);font-weight:600">${fmtNum(stock)} ${esc(p.unit || '')}</td>
-                  <td style="text-align:right;color:var(--text-2)">${fmtNum(p.low_stock_alert || 0)}</td>
-                </tr>`;
+                return `
+                  <div class="mobile-list-item">
+                    <div class="mli-head">
+                      <div class="mli-title">${esc(p.name)}</div>
+                      <div class="mli-amt" style="color:var(--red)">${fmtNum(stock)} ${esc(p.unit || '')}</div>
+                    </div>
+                    <div class="mli-body">Alert at ${fmtNum(p.low_stock_alert || 0)} ${esc(p.unit || '')}</div>
+                  </div>`;
               }).join('')}
-            </tbody>
-          </table>
-        </div>
-        <div class="mobile-list">
-          ${lowStockList.slice(0, 10).map(p => {
-            const stock = productTotalStock(p);
-            return `
-              <div class="mobile-list-item">
-                <div class="mli-head">
-                  <div class="mli-title">${esc(p.name)}</div>
-                  <div class="mli-amt" style="color:var(--red)">${fmtNum(stock)} ${esc(p.unit || '')}</div>
-                </div>
-                <div class="mli-body">Alert at ${fmtNum(p.low_stock_alert || 0)} ${esc(p.unit || '')}</div>
-              </div>`;
-          }).join('')}
-        </div>
+            </div>
+          </div>
+        ` : ''}
       </div>
-    ` : ''}
+
+      <!-- RIGHT COLUMN: CHARTS & SMALL WIDGETS -->
+      <div class="dash-side">
+        
+        <!-- SALES TREND -->
+        <div class="card" style="margin-top:0">
+          <div class="card-title">Sales Trend <small>Last 30 days</small></div>
+          <div style="position:relative;height:260px"><canvas id="dash-chart"></canvas></div>
+        </div>
+
+        <!-- MINI KPIs -->
+        <div class="mini-kpi-row" style="grid-template-columns: 1fr 1fr; margin-top:0">
+          <div class="mini-kpi" onclick="location.hash='#/invoices'">
+            <div class="num">${todayBills}</div>
+            <div class="lbl">Today</div>
+          </div>
+          <div class="mini-kpi" onclick="location.hash='#/products'">
+            <div class="num" style="color:${lowStockCount > 0 ? 'var(--red)' : 'var(--text)'}">${lowStockCount}</div>
+            <div class="lbl">Low Stock</div>
+          </div>
+          <div class="mini-kpi" onclick="location.hash='#/batches'">
+            <div class="num" style="color:${nearExpCount > 0 ? 'var(--amber)' : 'var(--text)'}">${nearExpCount}</div>
+            <div class="lbl">Near Expiry</div>
+          </div>
+          <div class="mini-kpi" onclick="location.hash='#/customers'">
+            <div class="num">${dueCustCount}</div>
+            <div class="lbl">Due Cust</div>
+          </div>
+        </div>
+
+        <!-- PASTEL TILES -->
+        <div class="tile-row" style="grid-template-columns: 1fr; margin-top:0">
+          <div class="tile tile-amber" onclick="location.hash='#/batches'">
+            <div class="tile-icon">⏰</div>
+            <div class="num">${nearExpCount}</div>
+            <div class="lbl">Near Expiry</div>
+          </div>
+          <div class="tile tile-red" onclick="location.hash='#/batches'">
+            <div class="tile-icon">⚠️</div>
+            <div class="num">${expiredCount}</div>
+            <div class="lbl">Expired</div>
+          </div>
+          <div class="tile tile-pink" onclick="location.hash='#/customers'">
+            <div class="tile-icon">💸</div>
+            <div class="num">${fmtNum(dueCustCount)}</div>
+            <div class="lbl">Due Amount</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   `;
 
   /* ── Destroy prior charts ── */
